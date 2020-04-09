@@ -1,3 +1,23 @@
-const app = require('./app')
+require('dotenv/config')
 
-app.listen(3333, () => { console.log('Servidor rodando na porta 3000') })
+const Express = require('express')
+const routes = require('./routes')
+
+class App {
+  constructor () {
+    this.server = new Express()
+
+    this.middlewares()
+    this.routes()
+  }
+
+  middlewares () {
+    this.server.use(Express.json())
+  }
+
+  routes () {
+    this.server.use(routes)
+  }
+}
+
+module.exports = new App().server
