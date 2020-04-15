@@ -2,10 +2,11 @@ import jwt from 'jsonwebtoken'
 import { promisify } from 'utils'
 import authConfig from '../../config/auth'
 
-module.exports = async (req, res, next) => {
-  const authHeader = req.headers.authorization
+module.exports = async (ctx, next) => {
+  const authHeader = ctx.header.authorization
   if (!authHeader) {
-    res.status(401).json({ error: 'Token not provided' })
+    ctx.status = 401
+    ctx.response.body = { error: 'Token not provided' }
   }
 
   const [, token] = authHeader.split(' ')
@@ -13,10 +14,11 @@ module.exports = async (req, res, next) => {
   try {
     const decoded = await promisify(jwt.verify)(token, authConfig.secret)
 
-    req.userId = decoded.id
+    ctx.request.userId = decoded.id
 
     return next()
   } catch (error) {
-    return res.status(401).json({ error: 'Token invalid' })
+    ctx.status = 401
+    ctx.response.body = ({ error: 'Token invalid' })
   }
 }
