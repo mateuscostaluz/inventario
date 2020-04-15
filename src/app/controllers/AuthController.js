@@ -4,15 +4,17 @@ import User from '../models/User'
 
 class AuthController {
   async store (ctx) {
-    const { email, password } = req.body
+    const { email, password } = ctx.body
     const user = await User.findOne({ where: { email } })
     if (!user) {
       ctx.status = 401
-      ctx.response.body = { error: 'User not found' })
+      ctx.response.body = { error: 'User not found' }
+      return
     }
     if (!(await user.checkPassword(password))) {
       ctx.status = 401
       ctx.response.body = { error: 'Password does not match' }
+      return
     }
 
     const { id } = user
