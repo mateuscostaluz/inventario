@@ -1,8 +1,9 @@
-const { Router } = require('express')
+import Router from 'koa-routes'
+
+import ItemController from './app/controllers/ItemController'
+
 const router = new Router()
 
-const itemController = require('./app/controllers/ItemController')
+router.get('/', ItemController.index)
 
-router.get('/items', itemController.index)
-
-module.exports = router
+export default router

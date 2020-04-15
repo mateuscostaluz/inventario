@@ -2,4 +2,4 @@ class Item {
 
 }
 
-module.exports = new Item()
+export default new Item()

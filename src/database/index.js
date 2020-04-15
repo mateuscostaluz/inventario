@@ -1,17 +1,17 @@
-const Sequelize = require('sequelize')
+import Sequelize from 'sequelize'
 
-const Item = require('../app/models/Item')
+import Item from '../app/models/Item'
 
-const databaseConfig = require('../config/database')
+import databaseConfig from '../config/database'
 
 const models = [Item]
 
 class Database {
-  constructor () {
+  constructor() {
     this.init()
   }
 
-  init () {
+  init() {
     this.connection = new Sequelize(databaseConfig)
 
     models
@@ -20,4 +20,4 @@ class Database {
   }
 }
 
-module.exports = new Database()
+export default new Database()

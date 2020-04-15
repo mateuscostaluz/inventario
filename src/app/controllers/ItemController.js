@@ -1,7 +1,7 @@
 class ItemController {
-  async index (req, res) {
-    res.json({ ok: true })
+  async index (ctx) {
+    ctx.response.body = ({ ok: true })
   }
 }
 
-module.exports = new ItemController()
+export default new ItemController()

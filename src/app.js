@@ -1,23 +1,25 @@
-require('dotenv/config')
+import 'dotenv/config'
 
-const Express = require('express')
-const routes = require('./routes')
+import Koa from 'koa'
+import bodyParser from 'koa-bodyparser'
+
+import routes from './routes'
 
 class App {
   constructor () {
-    this.server = new Express()
+    this.server = new Koa()
 
     this.middlewares()
     this.routes()
   }
 
   middlewares () {
-    this.server.use(Express.json())
+    this.server.use(bodyParser())
   }
 
   routes () {
-    this.server.use(routes)
+    this.server.use(routes.routes())
   }
 }
 
-module.exports = new App().server
+export default new App().server
