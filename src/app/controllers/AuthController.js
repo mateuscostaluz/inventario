@@ -1,21 +1,25 @@
-const jwt = require('jsonwebtoken')
-const authConfig = require('../../config/auth')
-const User = require('../models/User')
+import jwt from 'jsonwebtoken'
+import authConfig from '../../config/auth'
+import User from '../models/User'
 
 class AuthController {
-  async store (req, res) {
-    const { email, password } = req.body
+  async store (ctx) {
+    const { email, password } = ctx.body
     const user = await User.findOne({ where: { email } })
     if (!user) {
-      return res.status(401).json({ error: 'User not found' })
+      ctx.status = 401
+      ctx.response.body = { error: 'User not found' }
+      return
     }
     if (!(await user.checkPassword(password))) {
-      return res.status(401).json({ error: 'Password does not match' })
+      ctx.status = 401
+      ctx.response.body = { error: 'Password does not match' }
+      return
     }
 
     const { id } = user
 
-    return res.json({
+    return ctx.response.body({
       user: {
         id,
         email
@@ -27,4 +31,4 @@ class AuthController {
   }
 }
 
-module.exports = new AuthController()
+export default new AuthController()
