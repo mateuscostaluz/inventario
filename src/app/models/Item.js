@@ -1,5 +1,16 @@
-class Item {
+import Sequelize, { Model } from 'sequelize'
 
+class Item extends Model {
+  static init (sequelize) {
+    super.init({
+      name: Sequelize.STRING
+    },
+    {
+      sequelize
+    })
+
+    return this
+  }
 }
 
-export default new Item()
+export default Item
