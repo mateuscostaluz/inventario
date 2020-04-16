@@ -4,7 +4,7 @@ import User from '../models/User'
 
 class AuthController {
   async store (ctx) {
-    const { email, password } = ctx.body
+    const { email, password } = ctx.request.body
     const user = await User.findOne({ where: { email } })
     if (!user) {
       ctx.status = 401
@@ -19,7 +19,8 @@ class AuthController {
 
     const { id } = user
 
-    return ctx.response.body({
+    ctx.status = 201
+    ctx.response.body = {
       user: {
         id,
         email
@@ -27,7 +28,7 @@ class AuthController {
       token: jwt.sign({ id }, authConfig.secret, {
         expiresIn: authConfig.expiresIn
       })
-    })
+    }
   }
 }
 
