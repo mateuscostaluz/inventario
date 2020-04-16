@@ -3,7 +3,10 @@ import Sequelize, { Model } from 'sequelize'
 class Item extends Model {
   static init (sequelize) {
     super.init({
-      name: Sequelize.STRING
+      name: {
+        type: Sequelize.STRING,
+        allowNull: false
+      }
     },
     {
       sequelize
