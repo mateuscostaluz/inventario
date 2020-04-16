@@ -9,6 +9,7 @@ test('Saving and Deleting Item', async () => {
 
 test('Updating and Deleting Item', async () => {
   const item = await Item.create({ name: 'Item' })
+  console.log(item)
   const newName = 'Novo nome'
   item.name = newName
   await item.save()

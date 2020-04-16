@@ -4,6 +4,7 @@ import Koa from 'koa'
 import bodyParser from 'koa-bodyparser'
 
 import routes from './routes'
+
 import './database'
 
 class App {
