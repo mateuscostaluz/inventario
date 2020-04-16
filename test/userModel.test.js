@@ -17,7 +17,7 @@ test('Updating and Deleting User', async () => {
   await user.destroy()
 })
 
-test('Checking password', async() => {
+test('Checking password', async () => {
   const user = await User.create({ name: 'User', email: 'user2@email.com', password: 'password' })
   const resultTrue = await user.checkPassword('password')
   const resultFalse = await user.checkPassword('wrong password')
