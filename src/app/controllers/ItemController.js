@@ -15,6 +15,22 @@ class ItemController {
       })
     } catch (err) {
       ctx.status = 400
+      ctx.response.body = ('Não foi possível inserir o item')
+    }
+  }
+
+  async update (ctx) {
+    try {
+      const item = await Item.findByPk(ctx.params.id)
+
+      const { id, name } = await item.update(ctx.request.body)
+      ctx.status = 200
+      ctx.response.body = ({
+        id,
+        name
+      })
+    } catch (err) {
+      ctx.status = 400
       ctx.response.body = (err)
     }
   }

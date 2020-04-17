@@ -16,5 +16,6 @@ router.post('/users', UserController.store)
 router.use(authMiddleware)
 router.get('/users', UserController.index)
 router.post('/item', ItemController.store)
+router.put('/item/:id', ItemController.update)
 
 export default router

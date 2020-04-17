@@ -2,8 +2,9 @@ import request from 'supertest'
 import app from '../src/server'
 import Database from '../src/database/index'
 
-describe('Test Users endpoints', () => {
+import Item from '../src/app/models/Item'
 
+describe('Test Items endpoints', () => {
   let token
 
   beforeAll(async () => {
@@ -31,6 +32,24 @@ describe('Test Users endpoints', () => {
       .post('/item')
       .set('Authorization', 'bearer ' + token)
       .send({ nome: 'Cadeira' })
+    expect(response.statusCode).toBe(400)
+  })
+
+  test('Should update an item', async () => {
+    const { id } = await Item.create({ name: 'Cadeira' })
+    const response = await request(app)
+      .put('/item/' + id)
+      .set('Authorization', 'bearer ' + token)
+      .send({ name: 'Mesa' })
+    expect(response.statusCode).toBe(200)
+  })
+
+  test('Should response bad request error for an update', async () => {
+    const id = null
+    const response = await request(app)
+      .put('/item/' + id)
+      .set('Authorization', 'bearer ' + token)
+      .send({ name: 'Mesa' })
     expect(response.statusCode).toBe(400)
   })
 })
