@@ -1,9 +1,15 @@
 import User from '../models/User'
 
 class UserController {
+
+  async index (ctx) {
+    const users = await User.findAll()
+    ctx.status = 200
+    ctx.response.body = users
+  }
+
   async store (ctx) {
     const { name, email, password } = ctx.request.body
-    console.log(name, email, password)
     try {
       const usr = await User.findOne({ where: { email } })
       if (usr) {
