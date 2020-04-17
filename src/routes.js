@@ -11,7 +11,7 @@ router.get('/', ItemController.index)
 
 router.post('/auth', AuthController.store)
 router.post('/users', UserController.store)
-router.get('/users', UserController.index)
+router.get('/users', authMiddleware, UserController.index)
 router.post('/item', ItemController.store)
 
 // Todos os endpoints abaixo requerem autenticação
