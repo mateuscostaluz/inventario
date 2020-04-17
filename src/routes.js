@@ -10,5 +10,6 @@ router.get('/', ItemController.index)
 router.post('/users', UserController.store)
 
 router.post('/item', ItemController.store)
+router.put('/item/:id', ItemController.update)
 
 export default router
