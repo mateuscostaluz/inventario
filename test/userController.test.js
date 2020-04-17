@@ -43,6 +43,58 @@ describe('Test Users endpoints', () => {
     expect(body.length).toBe(2)
     expect(response.statusCode).toBe(200)
   })
+
+  test('Should update an user', async () => {
+    await request(app)
+      .post('/users')
+      .send({ name: 'User 01', email: 'user01@email.com', password: 'password' })
+
+    const authResponse = await request(app)
+      .post('/auth')
+      .send({ email: 'user01@email.com', password: 'password' })
+
+    const response = await request(app)
+      .put('/users')
+      .set('Authorization', 'bearer ' + authResponse.body.token)
+      .send({ name: 'User 01', email: 'user01@email.com' })
+
+    expect(response.statusCode).toBe(200)
+  })
+
+  test('Should reponse 409 - Conflict', async () => {
+    await Database.connection.models.User.truncate()
+
+    await request(app)
+      .post('/users')
+      .send({ name: 'User 01', email: 'user01@email.com', password: 'password' })
+
+    const authResponse = await request(app)
+      .post('/auth')
+      .send({ email: 'user01@email.com', password: 'password' })
+
+    const response = await request(app)
+      .put('/users')
+      .set('Authorization', 'bearer ' + authResponse.body.token)
+      .send({ name: 'User 01', email: 'user01@email.com' })
+
+    expect(response.statusCode).toBe(200)
+  })
+
+  test('Should response Access Forbidden', async () => {
+    await request(app)
+      .post('/users')
+      .send({ name: 'User 01', email: 'user01@email.com', password: 'password' })
+
+    const findAllResponse = await request(app)
+      .get('/users')
+
+    const updateResponse = await request(app)
+      .put('/users')
+      .send({ name: 'User 01', email: 'user01@email.com' })
+
+    expect(findAllResponse.statusCode).toBe(401)
+    expect(updateResponse.statusCode).toBe(401)
+  })
 })
 
 afterAll(async () => {
