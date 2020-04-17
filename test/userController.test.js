@@ -14,15 +14,30 @@ describe('Test Users endpoints', () => {
   test('Should response conflict error', async () => {
     await request(app)
       .post('/users')
-      .send({ name: 'Gabriel', email: 'user@email.com', password: 'password' })
+      .send({ name: 'Gabriel', email: 'user2@email.com', password: 'password' })
     const response = await request(app)
       .post('/users')
-      .send({ name: 'Gabriel', email: 'user@email.com', password: 'password' })
+      .send({ name: 'Gabriel', email: 'user2@email.com', password: 'password' })
     expect(response.statusCode).toBe(409)
+  })
+
+  test('Should save an user', async () => {
+    await request(app)
+      .post('/users')
+      .send({ name: 'Usuario 1', email: 'user3@email.com', password: 'password' })
+    await request(app)
+      .post('/users')
+      .send({ name: 'Usuario 2', email: 'user4@email.com', password: 'password' })
+
+    const response = await request(app)
+      .get('/users')
+    const { body } = response
+    expect(body.length).toBe(4)
+    expect(response.statusCode).toBe(200)
   })
 })
 
 afterAll(async () => {
-  await Database.connection.sync({ force: true })
+  await Database.connection.models.User.truncate()
   app.close()
 })
