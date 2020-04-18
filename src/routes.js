@@ -17,6 +17,7 @@ router.post('/inventory', InventoryController.store)
 // Todos os endpoints abaixo requerem autenticação
 router.use(authMiddleware)
 router.get('/users', UserController.index)
+router.put('/users', UserController.update)
 router.post('/item', ItemController.store)
 router.put('/item/:id', ItemController.update)
 
