@@ -61,12 +61,16 @@ describe('Test Users endpoints', () => {
     expect(response.statusCode).toBe(200)
   })
 
-  test('Should reponse 409 - Conflict', async () => {
+  test('Should response 409 Conflict on Update', async () => {
     await Database.connection.models.User.truncate()
 
     await request(app)
       .post('/users')
       .send({ name: 'User 01', email: 'user01@email.com', password: 'password' })
+
+    await request(app)
+      .post('/users')
+      .send({ name: 'User 02', email: 'user02@email.com', password: 'password' })
 
     const authResponse = await request(app)
       .post('/auth')
@@ -75,9 +79,9 @@ describe('Test Users endpoints', () => {
     const response = await request(app)
       .put('/users')
       .set('Authorization', 'bearer ' + authResponse.body.token)
-      .send({ name: 'User 01', email: 'user01@email.com' })
+      .send({ name: 'User 01', email: 'user02@email.com' })
 
-    expect(response.statusCode).toBe(200)
+    expect(response.statusCode).toBe(409)
   })
 
   test('Should response Access Forbidden', async () => {
@@ -94,6 +98,23 @@ describe('Test Users endpoints', () => {
 
     expect(findAllResponse.statusCode).toBe(401)
     expect(updateResponse.statusCode).toBe(401)
+  })
+
+  test('Should delete the logged user', async () => {
+    await request(app)
+      .post('/users')
+      .send({ name: 'User 123', email: 'user123@email.com', password: 'password' })
+
+    const authResponse = await request(app)
+      .post('/auth')
+      .send({ email: 'user123@email.com', password: 'password' })
+
+    const { token } = authResponse.body
+
+    const response = await request(app)
+      .delete('/users')
+      .set('Authorization', 'bearer ' + token)
+    expect(response.statusCode).toBe(204)
   })
 })
 
