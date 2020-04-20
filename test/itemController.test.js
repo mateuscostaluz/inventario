@@ -62,6 +62,13 @@ describe('Test Items endpoints', () => {
     expect(response.body.name).toBe('Cadeira')
   })
 
+  test('Should find item by PK and response 404 ', async () => {
+    const id = -1
+    const response = await request(app)
+      .get('/item/' + id)
+      .set('Authorization', 'bearer ' + token)
+    expect(response.statusCode).toBe(404)
+  })
 })
 
 afterAll(async () => {

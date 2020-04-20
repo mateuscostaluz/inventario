@@ -9,6 +9,10 @@ class ItemController {
     try {
       const item = await Item.findByPk(ctx.params.id)
 
+      if (!item) {
+        ctx.status = 404
+        return
+      }
       ctx.status = 200
       ctx.response.body = item
     } catch (err) {
