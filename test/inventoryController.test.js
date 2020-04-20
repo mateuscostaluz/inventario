@@ -2,8 +2,6 @@ import request from 'supertest'
 import app from '../src/server'
 import Database from '../src/database/index'
 
-import Inventory from '../src/app/models/Inventory'
-
 describe('Test Inventories endpoints', () => {
   let token
 
@@ -53,6 +51,6 @@ describe('Test Inventories endpoints', () => {
 })
 
 afterAll(async () => {
-  await Database.connection.models.Item.truncate()
+  await Database.connection.models.Inventory.truncate()
   app.close()
 })
