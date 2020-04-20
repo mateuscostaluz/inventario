@@ -5,6 +5,18 @@ class ItemController {
     ctx.response.body = ({ ok: true })
   }
 
+  async findById (ctx) {
+    try {
+      const item = await Item.findByPk(ctx.params.id)
+
+      ctx.status = 200
+      ctx.response.body = item
+    } catch (err) {
+      ctx.status = 400
+      ctx.response.body = err
+    }
+  }
+
   async store (ctx) {
     try {
       const { id, name } = await Item.create(ctx.request.body)
