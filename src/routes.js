@@ -17,11 +17,8 @@ router.use(authMiddleware)
 
 router.get('/users', UserController.index)
 router.put('/users', UserController.update)
-<<<<<<< HEAD
-
-=======
 router.delete('/users', UserController.delete)
->>>>>>> develop
+
 router.post('/item', ItemController.store)
 router.put('/item/:id', ItemController.update)
 
