@@ -1,13 +1,13 @@
-import Item from '../models/Item'
+import Department from '../models/Department'
 
-class ItemController {
+class DepartmentController {
   async index (ctx) {
     ctx.response.body = ({ ok: true })
   }
 
   async store (ctx) {
     try {
-      const { id, name } = await Item.create(ctx.request.body)
+      const { id, name } = await Department.create(ctx.request.body)
       ctx.status = 201
       ctx.response.body = ({
         id,
@@ -15,15 +15,15 @@ class ItemController {
       })
     } catch (err) {
       ctx.status = 400
-      ctx.response.body = ('Não foi possível inserir o item')
+      ctx.response.body = ('Não foi possível inserir o departamento')
     }
   }
 
   async update (ctx) {
     try {
-      const item = await Item.findByPk(ctx.params.id)
+      const department = await Department.findByPk(ctx.params.id)
 
-      const { id, name } = await item.update(ctx.request.body)
+      const { id, name } = await department.update(ctx.request.body)
       ctx.status = 200
       ctx.response.body = ({
         id,
@@ -36,4 +36,4 @@ class ItemController {
   }
 }
 
-export default new ItemController()
+export default new DepartmentController()

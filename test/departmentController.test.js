@@ -2,9 +2,9 @@ import request from 'supertest'
 import app from '../src/server'
 import Database from '../src/database/index'
 
-import Item from '../src/app/models/Item'
+import Department from '../src/app/models/Department'
 
-describe('Test Items endpoints', () => {
+describe('Test Departments endpoints', () => {
   let token
 
   beforeAll(async () => {
@@ -19,37 +19,37 @@ describe('Test Items endpoints', () => {
     token = authResponse.body.token
   })
 
-  test('Should save an Item', async () => {
+  test('Should save an Department', async () => {
     const response = await request(app)
-      .post('/item')
+      .post('/department')
       .set('Authorization', 'bearer ' + token)
-      .send({ name: 'Cadeira' })
+      .send({ name: 'Contabilidade' })
     expect(response.statusCode).toBe(201)
   })
 
   test('Should response bad request error', async () => {
     const response = await request(app)
-      .post('/item')
+      .post('/department')
       .set('Authorization', 'bearer ' + token)
-      .send({ nome: 'Cadeira' })
+      .send({ nome: 'Contabilidade' })
     expect(response.statusCode).toBe(400)
   })
 
-  test('Should update an item', async () => {
-    const { id } = await Item.create({ name: 'Cadeira' })
+  test('Should update an department', async () => {
+    const { id } = await Department.create({ name: 'Contabilidade' })
     const response = await request(app)
-      .put('/item/' + id)
+      .put('/department/' + id)
       .set('Authorization', 'bearer ' + token)
-      .send({ name: 'Mesa' })
+      .send({ name: 'Desenvolvimento' })
     expect(response.statusCode).toBe(200)
   })
 
   test('Should response bad request error for an update', async () => {
     const id = null
     const response = await request(app)
-      .put('/item/' + id)
+      .put('/department/' + id)
       .set('Authorization', 'bearer ' + token)
-      .send({ name: 'Mesa' })
+      .send({ name: 'Desenvolvimento' })
     expect(response.statusCode).toBe(400)
   })
 })
