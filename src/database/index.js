@@ -1,12 +1,13 @@
 import Sequelize from 'sequelize'
 
-import User from '../app/models/User'
-import Item from '../app/models/Item'
+import Department from '../app/models/Department'
 import Inventory from '../app/models/Inventory'
+import Item from '../app/models/Item'
+import User from '../app/models/User'
 
 import databaseConfig from '../config/database'
 
-const models = [User, Item, Inventory]
+const models = [Department, Inventory, Item, User]
 
 class Database {
   constructor () {

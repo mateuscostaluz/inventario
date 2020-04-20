@@ -5,10 +5,9 @@ import AuthController from './app/controllers/AuthController'
 import ItemController from './app/controllers/ItemController'
 import UserController from './app/controllers/UserController'
 import InventoryController from './app/controllers/InventoryController'
+import DepartmentController from './app/controllers/DepartmentController'
 
 const router = new Router()
-
-router.get('/', ItemController.index)
 
 router.post('/auth', AuthController.store)
 router.post('/users', UserController.store)
@@ -19,6 +18,7 @@ router.get('/users', UserController.index)
 router.put('/users', UserController.update)
 router.post('/item', ItemController.store)
 router.put('/item/:id', ItemController.update)
-router.post('/inventory', InventoryController.store)
+router.post('/department', DepartmentController.store)
+router.put('/department/:id', DepartmentController.update)
 
 export default router
