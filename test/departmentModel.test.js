@@ -9,7 +9,6 @@ test('Saving and Deleting Department', async () => {
 
 test('Updating and Deleting Department', async () => {
   const department = await Department.create({ name: 'Department' })
-  console.log(department)
   const newName = 'Novo nome'
   department.name = newName
   await department.save()

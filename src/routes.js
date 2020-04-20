@@ -14,11 +14,16 @@ router.post('/users', UserController.store)
 
 // Todos os endpoints abaixo requerem autenticação
 router.use(authMiddleware)
+
 router.get('/users', UserController.index)
 router.put('/users', UserController.update)
+
 router.post('/item', ItemController.store)
 router.put('/item/:id', ItemController.update)
+
 router.post('/department', DepartmentController.store)
 router.put('/department/:id', DepartmentController.update)
+
+router.post('/inventory', InventoryController.store)
 
 export default router

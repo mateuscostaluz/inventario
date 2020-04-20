@@ -36,7 +36,7 @@ describe('Test Departments endpoints', () => {
   })
 
   test('Should update an department', async () => {
-    const { id } = await Department.create({ name: 'Contabilidade' })
+    const { id } = await Department.create({ name: 'RH' })
     const response = await request(app)
       .put('/department/' + id)
       .set('Authorization', 'bearer ' + token)
@@ -55,6 +55,6 @@ describe('Test Departments endpoints', () => {
 })
 
 afterAll(async () => {
-  await Database.connection.models.Item.truncate()
+  await Database.connection.models.Department.truncate()
   app.close()
 })
