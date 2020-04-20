@@ -7,11 +7,12 @@ class ItemController {
 
   async store (ctx) {
     try {
-      const { id, name } = await Item.create(ctx.request.body)
+      const { id, name, department_fk } = await Item.create(ctx.request.body)
       ctx.status = 201
       ctx.response.body = ({
         id,
-        name
+        name,
+        department_fk
       })
     } catch (err) {
       ctx.status = 400
@@ -23,11 +24,12 @@ class ItemController {
     try {
       const item = await Item.findByPk(ctx.params.id)
 
-      const { id, name } = await item.update(ctx.request.body)
+      const { id, name, department_fk } = await item.update(ctx.request.body)
       ctx.status = 200
       ctx.response.body = ({
         id,
-        name
+        name,
+        department_fk
       })
     } catch (err) {
       ctx.status = 400

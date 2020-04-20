@@ -1,11 +1,12 @@
 import request from 'supertest'
 import app from '../src/server'
-import Database from '../src/database/index'
+import Database from '../src/database'
 
 import Item from '../src/app/models/Item'
 
 describe('Test Items endpoints', () => {
   let token
+  let depId
 
   beforeAll(async () => {
     await request(app)
@@ -17,13 +18,20 @@ describe('Test Items endpoints', () => {
       .send({ email: 'user123@email.com', password: 'password' })
 
     token = authResponse.body.token
+
+    const { id } = await request(app)
+      .post('/department')
+      .set('Authorization', 'bearer' + token)
+      .send({ name: 'Depart01' })
+
+    depId = id
   })
 
   test('Should save an Item', async () => {
     const response = await request(app)
       .post('/item')
       .set('Authorization', 'bearer ' + token)
-      .send({ name: 'Cadeira' })
+      .send({ name: 'Cadeira', department_fk: depId })
     expect(response.statusCode).toBe(201)
   })
 
@@ -36,11 +44,11 @@ describe('Test Items endpoints', () => {
   })
 
   test('Should update an item', async () => {
-    const { id } = await Item.create({ name: 'Cadeira' })
+    const { id } = await Item.create({ name: 'Cadeira', department_fk: depId })
     const response = await request(app)
       .put('/item/' + id)
       .set('Authorization', 'bearer ' + token)
-      .send({ name: 'Mesa' })
+      .send({ name: 'Mesa', department_fk: depId })
     expect(response.statusCode).toBe(200)
   })
 

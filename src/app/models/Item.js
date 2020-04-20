@@ -11,6 +11,10 @@ class Item extends Model {
 
     return this
   }
+
+  static associate (models) {
+    this.belongsTo(models.Department, { foreignKey: 'department_fk' })
+  }
 }
 
 export default Item
