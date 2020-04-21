@@ -6,6 +6,22 @@ class ItemController {
     ctx.response.body = ({ ok: true })
   }
 
+  async findById (ctx) {
+    try {
+      const item = await Item.findByPk(ctx.params.id)
+
+      if (!item) {
+        ctx.status = 404
+        return
+      }
+      ctx.status = 200
+      ctx.response.body = item
+    } catch (err) {
+      ctx.status = 400
+      ctx.response.body = err
+    }
+  }
+
   async store (ctx) {
     const schema = Yup.object().shape({
       name: Yup.string().required(),

@@ -20,6 +20,7 @@ router.put('/users', UserController.update)
 router.delete('/users', UserController.delete)
 
 router.post('/item', ItemController.store)
+router.get('/item/:id', ItemController.findById)
 router.put('/item/:id', ItemController.update)
 
 router.post('/department', DepartmentController.store)

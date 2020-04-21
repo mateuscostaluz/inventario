@@ -59,6 +59,23 @@ describe('Test Items endpoints', () => {
       .send({ name: 'Mesa' })
     expect(response.statusCode).toBe(400)
   })
+
+  test('Should find item by PK', async () => {
+    const { id } = await Item.create({ name: 'Cadeira' })
+    const response = await request(app)
+      .get('/item/' + id)
+      .set('Authorization', 'bearer ' + token)
+    expect(response.statusCode).toBe(200)
+    expect(response.body.name).toBe('Cadeira')
+  })
+
+  test('Should find item by PK and response 404 ', async () => {
+    const id = -1
+    const response = await request(app)
+      .get('/item/' + id)
+      .set('Authorization', 'bearer ' + token)
+    expect(response.statusCode).toBe(404)
+  })
 })
 
 afterAll(async () => {
