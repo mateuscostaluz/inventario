@@ -139,7 +139,8 @@ describe('Test Inventories endpoints', () => {
 })
 
 afterAll(async done => {
-  await Database.connection.models.Inventory.destroy({ truncate: true, cascade: true })
+  await Database.connection.models.Inventory.truncate({ cascade: true })
+  await Database.connection.close()
   app.close()
   done()
 })

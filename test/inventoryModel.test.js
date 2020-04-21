@@ -21,6 +21,6 @@ test('Updating and Deleting Inventory', async () => {
 })
 
 afterAll(async done => {
-  Database.connection.close()
+  await Database.connection.close()
   done()
 })
