@@ -27,7 +27,48 @@ describe('Test Inventories endpoints', () => {
     expect(response.statusCode).toBe(201)
   })
 
-  test('Should response bad request error', async () => {
+  test('Should return bad request - invalid description < 10', async () => {
+    const response = await request(app)
+      .post('/inventory')
+      .set('Authorization', 'bearer ' + token)
+      .send({ name: 'Inventario GSW', description: 'cds - GSW' })
+    expect(response.statusCode).toBe(400)
+  })
+
+  test('Should return bad request - invalid name', async () => {
+    const response = await request(app)
+      .post('/inventory')
+      .set('Authorization', 'bearer ' + token)
+      .send({ name: '', description: 'inventario cds - GSW' })
+    expect(response.statusCode).toBe(400)
+  })
+
+  test('Should return bad request - invalid date', async () => {
+    const response = await request(app)
+      .post('/inventory')
+      .set('Authorization', 'bearer ' + token)
+      .send({ name: '', description: 'inventario cds - GSW', end_date: '22/05/2020' })
+    expect(response.statusCode).toBe(400)
+  })
+
+  test('Should return bad request - invalid date', async () => {
+    const response = await request(app)
+      .post('/inventory')
+      .set('Authorization', 'bearer ' + token)
+      .send({ name: 'gsw', description: 'inventario cds - GSW', end_date: '20-06-20T22:36:30' })
+    expect(response.statusCode).toBe(400)
+  })
+
+  test('Should save an inventory - testing date', async () => {
+    const response = await request(app)
+      .post('/inventory')
+      .set('Authorization', 'bearer ' + token)
+      .send({ name: 'gsw', description: 'inventario cds - GSW', end_date: '2020-05-20T22:36:30' })
+    expect(response.statusCode).toBe(201)
+  })
+
+  
+  test('Should response bad request error - missing description', async () => {
     const response = await request(app)
       .post('/inventory')
       .set('Authorization', 'bearer ' + token)
@@ -35,7 +76,7 @@ describe('Test Inventories endpoints', () => {
     expect(response.statusCode).toBe(400)
   })
 
-  test('Should response bad request error', async () => {
+  test('Should response bad request error - missing name', async () => {
     const response = await request(app)
       .post('/inventory')
       .set('Authorization', 'bearer ' + token)
@@ -43,7 +84,7 @@ describe('Test Inventories endpoints', () => {
     expect(response.statusCode).toBe(400)
   })
 
-  test('Should save an Inventory', async () => {
+  test('Should response bad request error - missing name != nome', async () => {
     const response = await request(app)
       .post('/inventory')
       .set('Authorization', 'bearer ' + token)
@@ -74,7 +115,7 @@ describe('Test Inventories endpoints', () => {
     expect(response.body.end_date).toBe('2020-04-20T22:36:30.001Z')
   })
 
-  test('Should return bad request', async () => {
+  test('Should return bad request - missing id', async () => {
     const id = null
 
     const response = await request(app)

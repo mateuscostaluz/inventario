@@ -1,7 +1,21 @@
 import Inventory from '../models/Inventory'
 
+import * as Yup from 'yup'
+
 class InventoryController {
   async store (ctx) {
+    const schema = Yup.object().shape({
+      name: Yup.string().required().min(1),
+      description: Yup.string().min(10).max(100).required(),
+      end_date: Yup.date()
+    })
+
+    if (!await schema.isValid(ctx.request.body)) {
+      ctx.status = 400
+      ctx.response.body = { error: 'Validation fails ' }
+      return ctx.response.body
+    }
+
     try {
       const inventory = await Inventory.create(ctx.request.body)
       ctx.status = 201
