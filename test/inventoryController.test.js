@@ -50,7 +50,8 @@ describe('Test Inventories endpoints', () => {
   })
 })
 
-afterAll(async () => {
-  await Database.connection.models.Inventory.truncate()
+afterAll(async done => {
+  await Database.connection.models.Inventory.destroy({ truncate: true, cascade: true })
   app.close()
+  done()
 })

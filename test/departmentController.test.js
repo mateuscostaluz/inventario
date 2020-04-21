@@ -54,7 +54,9 @@ describe('Test Departments endpoints', () => {
   })
 })
 
-afterAll(async () => {
-  await Database.connection.models.Department.truncate()
+afterAll(async done => {
+  await Database.connection.models.Department
+    .destroy({ truncate: true, cascade: true })
   app.close()
+  done()
 })

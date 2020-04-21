@@ -1,11 +1,13 @@
 import request from 'supertest'
 import app from '../src/server'
-import Database from '../src/database/index'
+import Database from '../src/database'
 
 import Item from '../src/app/models/Item'
+import Department from '../src/app/models/Department'
 
 describe('Test Items endpoints', () => {
   let token
+  let depId
 
   beforeAll(async () => {
     await request(app)
@@ -17,13 +19,18 @@ describe('Test Items endpoints', () => {
       .send({ email: 'user123@email.com', password: 'password' })
 
     token = authResponse.body.token
+
+    const { id } = await Department.create({ name: 'Depart01' })
+
+    depId = id
+    console.log(depId)
   })
 
   test('Should save an Item', async () => {
     const response = await request(app)
       .post('/item')
       .set('Authorization', 'bearer ' + token)
-      .send({ name: 'Cadeira' })
+      .send({ name: 'Cadeira', department_id: depId })
     expect(response.statusCode).toBe(201)
   })
 
@@ -36,11 +43,11 @@ describe('Test Items endpoints', () => {
   })
 
   test('Should update an item', async () => {
-    const { id } = await Item.create({ name: 'Cadeira' })
+    const { id } = await Item.create({ name: 'Cadeira', department_id: depId })
     const response = await request(app)
       .put('/item/' + id)
       .set('Authorization', 'bearer ' + token)
-      .send({ name: 'Mesa' })
+      .send({ name: 'Mesa', department_id: depId })
     expect(response.statusCode).toBe(200)
   })
 
@@ -71,7 +78,8 @@ describe('Test Items endpoints', () => {
   })
 })
 
-afterAll(async () => {
-  await Database.connection.models.Item.truncate()
+afterAll(async done => {
+  await Database.connection.models.Item.truncate({ cascade: true })
   app.close()
+  done()
 })
