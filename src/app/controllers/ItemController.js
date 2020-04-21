@@ -25,7 +25,7 @@ class ItemController {
   async store (ctx) {
     const schema = Yup.object().shape({
       name: Yup.string().required(),
-      department_id: Yup.string().required()
+      department_id: Yup.number().required()
     })
 
     if (!(await schema.isValid(ctx.request.body))) {

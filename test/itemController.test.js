@@ -43,7 +43,7 @@ describe('Test Items endpoints', () => {
   })
 
   test('Should update an item', async () => {
-    const { id } = await Item.create({ name: 'Cadeira', department_fk: depId })
+    const { id } = await Item.create({ name: 'Cadeira', department_id: depId })
     const response = await request(app)
       .put('/item/' + id)
       .set('Authorization', 'bearer ' + token)
