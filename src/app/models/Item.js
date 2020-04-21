@@ -13,7 +13,7 @@ class Item extends Model {
   }
 
   static associate (models) {
-    this.belongsTo(models.Department, { foreignKey: 'department_fk' })
+    this.belongsTo(models.Department, { foreignKey: 'department_id' })
   }
 }
 

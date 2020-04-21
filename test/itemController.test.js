@@ -3,6 +3,7 @@ import app from '../src/server'
 import Database from '../src/database'
 
 import Item from '../src/app/models/Item'
+import Department from '../src/app/models/Department'
 
 describe('Test Items endpoints', () => {
   let token
@@ -19,19 +20,17 @@ describe('Test Items endpoints', () => {
 
     token = authResponse.body.token
 
-    const { id } = await request(app)
-      .post('/department')
-      .set('Authorization', 'bearer' + token)
-      .send({ name: 'Depart01' })
+    const { id } = await Department.create({ name: 'Depart01' })
 
     depId = id
+    console.log(depId)
   })
 
   test('Should save an Item', async () => {
     const response = await request(app)
       .post('/item')
       .set('Authorization', 'bearer ' + token)
-      .send({ name: 'Cadeira', department_fk: depId })
+      .send({ name: 'Cadeira', department_id: depId })
     expect(response.statusCode).toBe(201)
   })
 
@@ -48,7 +47,7 @@ describe('Test Items endpoints', () => {
     const response = await request(app)
       .put('/item/' + id)
       .set('Authorization', 'bearer ' + token)
-      .send({ name: 'Mesa', department_fk: depId })
+      .send({ name: 'Mesa', department_id: depId })
     expect(response.statusCode).toBe(200)
   })
 
