@@ -17,7 +17,8 @@ describe('Test Auth Endpoint endpoints', () => {
   })
 })
 
-afterAll(async () => {
-  await Database.connection.models.User.truncate()
+afterAll(async done => {
+  await Database.connection.models.User.truncate({ cascade: true })
   app.close()
+  done()
 })
