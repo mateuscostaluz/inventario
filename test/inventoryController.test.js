@@ -67,7 +67,6 @@ describe('Test Inventories endpoints', () => {
     expect(response.statusCode).toBe(201)
   })
 
-  
   test('Should response bad request error - missing description', async () => {
     const response = await request(app)
       .post('/inventory')
@@ -101,8 +100,21 @@ describe('Test Inventories endpoints', () => {
       .put('/inventory/' + inventory.id)
       .set('Authorization', 'bearer ' + token)
       .send({ name: 'GSW' })
+    expect(response.statusCode).toBe(200)
     expect(response.body.name).toBe('GSW')
     expect(response.body.end_date).toBe(null)
+  })
+
+  test('Should response bad request - update invalid name', async () => {
+    const inventory = await Inventory.create({ name: 'Inventario GSW', description: 'inventario cds - GSW' })
+
+    expect(inventory.name).toBe('Inventario GSW')
+
+    const response = await request(app)
+      .put('/inventory/' + inventory.id)
+      .set('Authorization', 'bearer ' + token)
+      .send({ name: '' })
+    expect(response.statusCode).toBe(400)
   })
 
   test('Should update end_date an Inventory', async () => {
