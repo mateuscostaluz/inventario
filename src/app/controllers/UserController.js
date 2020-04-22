@@ -10,9 +10,9 @@ class UserController {
 
   async store (ctx) {
     const schema = Yup.object().shape({
-      name: Yup.string().required(),
+      name: Yup.string().required().strict(),
       email: Yup.string().email().required(),
-      password: Yup.string().required().min(6)
+      password: Yup.string().required().min(6).strict()
     })
 
     if (!await schema.isValid(ctx.request.body)) {
