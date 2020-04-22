@@ -10,6 +10,22 @@ describe('Test Users endpoints', () => {
     expect(response.statusCode).toBe(201)
   })
 
+  test('Should return Validation fails - email is not valid', async () => {
+    const response = await request(app)
+      .post('/users')
+      .send({ name: 'Gabriel', email: 'useremail.com', password: 'password' })
+    expect(response.statusCode).toBe(400)
+    expect(response.body.error).toBe('Validation fails')
+  })
+
+  test('Should return Validation fails - password is not valid', async () => {
+    const response = await request(app)
+      .post('/users')
+      .send({ name: 'Gabriel', email: 'usere@mail.com', password: 'pass' })
+    expect(response.statusCode).toBe(400)
+    expect(response.body.error).toBe('Validation fails')
+  })
+
   test('Should response conflict error', async () => {
     await request(app)
       .post('/users')

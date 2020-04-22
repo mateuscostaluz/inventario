@@ -29,14 +29,14 @@ class InventoryController {
 
   async update (ctx) {
     const schema = Yup.object().shape({
-      name: Yup.string().min(1),
+      name: Yup.string().min(1).strict(),
       description: Yup.string().min(10).max(100),
       end_date: Yup.date()
     })
 
     if (!await schema.isValid(ctx.request.body)) {
       ctx.status = 400
-      ctx.response.body = { error: 'Validation fails ' }
+      ctx.response.body = { error: 'Validation fails' }
       return ctx.response.body
     }
 
