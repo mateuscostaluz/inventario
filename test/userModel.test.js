@@ -27,6 +27,6 @@ test('Checking password', async () => {
 })
 
 afterAll(async done => {
-  Database.connection.close()
+  await Database.connection.close()
   done()
 })

@@ -3,7 +3,6 @@ import app from '../src/server'
 import Database from '../src/database/index'
 
 describe('Test Auth Endpoint endpoints', () => {
-
   test('Generate Token', async () => {
     await request(app)
       .post('/users')
@@ -19,6 +18,7 @@ describe('Test Auth Endpoint endpoints', () => {
 
 afterAll(async done => {
   await Database.connection.models.User.truncate({ cascade: true })
+  await Database.connection.close()
   app.close()
   done()
 })

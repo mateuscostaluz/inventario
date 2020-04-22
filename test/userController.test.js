@@ -37,7 +37,7 @@ describe('Test Users endpoints', () => {
   })
 
   test('Should list all users', async () => {
-    await Database.connection.models.User.truncate()
+    await Database.connection.models.User.truncate({ cascade: true })
 
     await request(app)
       .post('/users')
@@ -78,7 +78,7 @@ describe('Test Users endpoints', () => {
   })
 
   test('Should response 409 Conflict on Update', async () => {
-    await Database.connection.models.User.truncate()
+    await Database.connection.models.User.truncate({ cascade: true })
 
     await request(app)
       .post('/users')
@@ -136,6 +136,7 @@ describe('Test Users endpoints', () => {
 
 afterAll(async done => {
   await Database.connection.models.User.truncate({ cascade: true })
+  await Database.connection.close()
   app.close()
   done()
 })
