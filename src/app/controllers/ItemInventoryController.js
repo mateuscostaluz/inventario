@@ -7,7 +7,6 @@ class ItemInventoryController {
     const { userId } = ctx.request
     const { inventory_id: invId, item_id: itemId } = ctx.request.body
 
-    console.log('ITEEEEM ID', itemId)
     const item = await Item.findByPk(itemId)
     const inventory = await Inventory.findByPk(invId)
 
