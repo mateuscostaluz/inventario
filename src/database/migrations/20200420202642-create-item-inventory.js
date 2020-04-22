@@ -10,22 +10,17 @@ module.exports = {
           autoIncrement: true,
           primaryKey: true
         },
-        id_inventory: {
+        inventory_id: {
           type: Sequelize.INTEGER,
           references: { model: 'inventories', key: 'id' },
           allowNull: false
         },
-        id_item: {
+        item_id: {
           type: Sequelize.INTEGER,
           references: { model: 'items', key: 'id' },
           allowNull: false
         },
-        id_department: {
-          type: Sequelize.INTEGER,
-          references: { model: 'departments', key: 'id' },
-          allowNull: false
-        },
-        id_user: {
+        user_id: {
           type: Sequelize.INTEGER,
           references: { model: 'users', key: 'id' },
           allowNull: false

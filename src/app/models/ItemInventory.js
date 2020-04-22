@@ -15,10 +15,9 @@ class ItemInventory extends Model {
   }
 
   static associate (models) {
-    this.belongsTo(models.Item, { foreignKey: 'id_item' })
-    this.belongsTo(models.Department, { foreignKey: 'id_department' })
-    this.belongsTo(models.Inventory, { foreignKey: 'id_inventory' })
-    this.belongsTo(models.User, { foreignKey: 'id_user' })
+    this.belongsTo(models.Item, { foreignKey: 'item_id' })
+    this.belongsTo(models.Inventory, { foreignKey: 'inventory_id' })
+    this.belongsTo(models.User, { foreignKey: 'user_id' })
   }
 }
 

@@ -10,14 +10,14 @@ test('Creating ItemInventory', async done => {
   const department = await Department.create({ name: 'RH' })
   const item = await Item.create({ name: 'Cadeira', department_id: department.id })
   const user = await User.create({ name: 'User', email: 'email@email.com', password: '123' })
-  const inventory = await Inventory.create({ name: 'Inventorio 1', description: 'Descrição' })
+  const inventory = await Inventory.create({ name: 'Inventorio 1', description: 'Descrição', department_id: department.id })
 
   const itemInventory = await ItemInventory.create(
     {
-      id_user: user.id,
-      id_department: department.id,
-      id_inventory: inventory.id,
-      id_item: item.id,
+      user_id: user.id,
+      department_id: department.id,
+      inventory_id: inventory.id,
+      item_id: item.id,
       item_found_on_system: true,
       surplus: false
     })
