@@ -24,8 +24,8 @@ class ItemController {
 
   async store (ctx) {
     const schema = Yup.object().shape({
-      name: Yup.string().required(),
-      department_id: Yup.number().required()
+      name: Yup.string().required().strict(),
+      department_id: Yup.number().required().strict()
     })
 
     if (!(await schema.isValid(ctx.request.body))) {
@@ -49,6 +49,17 @@ class ItemController {
   }
 
   async update (ctx) {
+    const schema = Yup.object().shape({
+      name: Yup.string().strict(),
+      department_id: Yup.number().strict()
+    })
+
+    if (!(await schema.isValid(ctx.request.body))) {
+      ctx.status = 400
+      ctx.response.body = { error: 'Validation fails ' }
+      return ctx.response.body
+    }
+
     try {
       const item = await Item.findByPk(ctx.params.id)
 
