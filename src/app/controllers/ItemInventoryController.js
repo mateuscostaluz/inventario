@@ -5,13 +5,13 @@ import ItemInventory from '../models/ItemInventory'
 class ItemInventoryController {
   async store (ctx) {
     const { userId } = ctx.request
-    const { inventory_id, item_id } = ctx.request.body
+    const { inventory_id: invId, item_id: itemId } = ctx.request.body
 
-    console.log('ITEEEEM ID', item_id)
-    const item = await Item.findByPk(item_id)
-    const inventory = await Inventory.findByPk(inventory_id)
+    console.log('ITEEEEM ID', itemId)
+    const item = await Item.findByPk(itemId)
+    const inventory = await Inventory.findByPk(invId)
 
-    if (!(inventory_id && item_id)) {
+    if (!(invId && itemId)) {
       ctx.status = 400
       ctx.response.body = { error: 'Parametros Inválidos' }
       return
@@ -36,8 +36,8 @@ class ItemInventoryController {
 
     const itemInventory = await ItemInventory.create(
       {
-        inventory_id,
-        item_id,
+        inventory_id: invId,
+        item_id: itemId,
         user_id: userId,
         item_found_on_system: itemFoundOnSystem,
         surplus
