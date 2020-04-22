@@ -18,6 +18,6 @@ test('Updating and Deleting Department', async () => {
 })
 
 afterAll(async done => {
-  Database.connection.close()
+  await Database.connection.close()
   done()
 })

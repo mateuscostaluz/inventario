@@ -105,6 +105,8 @@ describe('Test Items endpoints', () => {
 
 afterAll(async done => {
   await Database.connection.models.Item.truncate({ cascade: true })
+  await Database.connection.models.Department.truncate({ cascade: true })
+  await Database.connection.close()
   app.close()
   done()
 })

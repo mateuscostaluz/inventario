@@ -19,7 +19,6 @@ module.exports = async (ctx, next) => {
 
     return next()
   } catch (error) {
-    console.log(token)
     ctx.status = 401
     ctx.response.body = ({ error: 'Token invalid' })
   }

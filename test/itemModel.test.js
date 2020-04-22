@@ -18,6 +18,6 @@ test('Updating and Deleting Item', async () => {
 })
 
 afterAll(async done => {
-  Database.connection.close()
+  await Database.connection.close()
   done()
 })
