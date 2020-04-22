@@ -1,4 +1,5 @@
 import User from '../models/User'
+import * as Yup from 'yup'
 
 class UserController {
   async index (ctx) {
@@ -8,6 +9,18 @@ class UserController {
   }
 
   async store (ctx) {
+    const schema = Yup.object().shape({
+      name: Yup.string().required(),
+      email: Yup.string().email().required(),
+      password: Yup.string().required().min(6)
+    })
+
+    if (!await schema.isValid(ctx.request.body)) {
+      ctx.status = 400
+      ctx.response.body = { error: 'Validation fails' }
+      return ctx.response.body
+    }
+
     const { name, email, password } = ctx.request.body
     const usr = await User.findOne({ where: { email } })
     if (usr) {
