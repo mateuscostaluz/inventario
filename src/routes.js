@@ -27,6 +27,7 @@ router.post('/department', DepartmentController.store)
 router.put('/department/:id', DepartmentController.update)
 
 router.post('/inventory', InventoryController.store)
+router.get('/inventory', InventoryController.index)
 router.put('/inventory/:id', InventoryController.update)
 
 export default router
