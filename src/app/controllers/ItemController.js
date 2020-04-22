@@ -75,6 +75,26 @@ class ItemController {
       ctx.response.body = (err)
     }
   }
+
+  async delete (ctx) {
+    const { id: itemId, name, department_id: depId } = await Item.findByPk(ctx.params.id)
+
+    try {
+      await Item.destroy({
+        where: {
+          id: itemId
+        }
+      })
+      ctx.status = 200
+      ctx.response.body = {
+        message: 'Item excluído',
+        name,
+        depId
+      }
+    } catch (err) {
+      ctx.status = 400
+    }
+  }
 }
 
 export default new ItemController()

@@ -36,7 +36,7 @@ describe('Test Items endpoints', () => {
     expect(response.statusCode).toBe(201)
   })
 
-  test('Should response bad request error for name validation', async () => {
+  test('Should response validation fails for name validation', async () => {
     const response = await request(app)
       .post('/item')
       .set('Authorization', 'bearer ' + token)
@@ -44,7 +44,7 @@ describe('Test Items endpoints', () => {
     expect(response.statusCode).toBe(400)
   })
 
-  test('Should response bad request error for department id validation', async () => {
+  test('Should response validation fails for department id validation', async () => {
     const response = await request(app)
       .post('/item')
       .set('Authorization', 'bearer ' + token)
@@ -100,6 +100,15 @@ describe('Test Items endpoints', () => {
       .get('/item/' + id)
       .set('Authorization', 'bearer ' + token)
     expect(response.statusCode).toBe(404)
+  })
+
+  test('Should delete an item', async () => {
+    const { id } = await Item.create({ name: 'Item' })
+    const response = await request(app)
+      .delete('/item/' + id)
+      .set('Authorization', 'bearer ' + token)
+    expect(response.statusCode).toBe(200)
+    expect(response.body.name).toBe('Item')
   })
 })
 
