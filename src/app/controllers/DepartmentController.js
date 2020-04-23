@@ -1,3 +1,4 @@
+import * as Yup from 'yup'
 import Department from '../models/Department'
 
 class DepartmentController {
@@ -6,6 +7,16 @@ class DepartmentController {
   }
 
   async store (ctx) {
+    const schema = Yup.object().shape({
+      name: Yup.string().required().min(2).strict()
+    })
+
+    if (!(await schema.isValid(ctx.request.body))) {
+      ctx.status = 400
+      ctx.response.body = { error: 'Validation fails ' }
+      return ctx.response.body
+    }
+
     try {
       const { id, name } = await Department.create(ctx.request.body)
       ctx.status = 201
@@ -20,6 +31,16 @@ class DepartmentController {
   }
 
   async update (ctx) {
+    const schema = Yup.object().shape({
+      name: Yup.string().min(2).strict()
+    })
+
+    if (!(await schema.isValid(ctx.request.body))) {
+      ctx.status = 400
+      ctx.response.body = { error: 'Validation fails ' }
+      return ctx.response.body
+    }
+
     try {
       const department = await Department.findByPk(ctx.params.id)
 
