@@ -35,11 +35,40 @@ class UserController {
   }
 
   async update (ctx) {
+    const schema = Yup.object().shape({
+      name: Yup.string().strict().min(2),
+      email: Yup.string().email(),
+      oldPassword: Yup.string().min(6),
+      password: Yup.string()
+        .min(6)
+        .when(
+          'oldPassword',
+          (oldPassword, field) => (oldPassword ? field.required() : field)
+        ),
+      confirmPassword: Yup.string().when(
+        'password',
+        (password, field) =>
+          password ? field.required().oneOf([Yup.ref('password')]) : field
+      )
+    })
+
+    if (!await schema.isValid(ctx.request.body)) {
+      ctx.status = 400
+      ctx.response.body = { error: 'Validation fails' }
+      return ctx.response.body
+    }
+
     const { userId } = ctx.request
-    const { name, email, active } = ctx.request.body
+    const { name, email, active, oldPassword } = ctx.request.body
 
     const user = await User.findByPk(userId)
     const emailExists = await User.findOne({ where: { email } })
+
+    if (oldPassword && !await user.checkPassword(oldPassword)) {
+      ctx.status = 400
+      ctx.response.body = { error: 'Password does not match' }
+      return ctx.response.body
+    }
 
     if (user.id !== emailExists.id) {
       ctx.status = 409
@@ -50,6 +79,7 @@ class UserController {
     user.name = name
     user.email = email
     user.active = active
+    user.password = oldPassword
 
     await user.save()
     ctx.status = 200
