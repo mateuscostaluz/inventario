@@ -4,16 +4,22 @@ import Database from '../src/database'
 
 import Item from '../src/app/models/Item'
 import Department from '../src/app/models/Department'
+import Inventory from '../src/app/models/Inventory'
+import ItemInventory from '../src/app/models/ItemInventory'
+import User from '../src/app/models/User'
 
 describe('Test Items endpoints', () => {
   let token
   let depId
   let itemId
+  let userId
 
   beforeAll(async () => {
-    await request(app)
-      .post('/users')
-      .send({ name: 'Usuario', email: 'user123@email.com', password: 'password' })
+    const { id: UserId } = await User.create({
+      name: 'Usuario', email: 'user123@email.com', password: 'password'
+    })
+
+    userId = UserId
 
     const authResponse = await request(app)
       .post('/auth')
@@ -36,7 +42,7 @@ describe('Test Items endpoints', () => {
     expect(response.statusCode).toBe(201)
   })
 
-  test('Should response bad request error for name validation', async () => {
+  test('Should response validation fails for name validation', async () => {
     const response = await request(app)
       .post('/item')
       .set('Authorization', 'bearer ' + token)
@@ -44,7 +50,7 @@ describe('Test Items endpoints', () => {
     expect(response.statusCode).toBe(400)
   })
 
-  test('Should response bad request error for department id validation', async () => {
+  test('Should response validation fails for department id validation', async () => {
     const response = await request(app)
       .post('/item')
       .set('Authorization', 'bearer ' + token)
@@ -101,11 +107,51 @@ describe('Test Items endpoints', () => {
       .set('Authorization', 'bearer ' + token)
     expect(response.statusCode).toBe(404)
   })
+
+  test('Should delete an item', async () => {
+    const { id } = await Item.create({ name: 'Item' })
+    const response = await request(app)
+      .delete('/item/' + id)
+      .set('Authorization', 'bearer ' + token)
+    expect(response.statusCode).toBe(200)
+    expect(response.body.name).toBe('Item')
+  })
+
+  test('Should response bad request error for delete', async () => {
+    const id = -1
+    const response = await request(app)
+      .delete('/item/' + id)
+      .set('Authorization', 'bearer ' + token)
+    expect(response.statusCode).toBe(400)
+  })
+
+  test('Should response conflict when an item exists in an inventory', async () => {
+    const { id } = await Item.create({ name: 'Item' })
+
+    const { id: invId } = await Inventory.create({
+      name: 'Inventario GSW', description: 'inventario cds - GSW'
+    })
+
+    await ItemInventory.create({
+      inventory_id: invId,
+      item_id: id,
+      user_id: userId,
+      item_found_on_system: true,
+      surplus: false
+    })
+
+    const response = await request(app)
+      .delete('/item/' + id)
+      .set('Authorization', 'bearer ' + token)
+    expect(response.statusCode).toBe(409)
+  })
 })
 
 afterAll(async done => {
   await Database.connection.models.Item.truncate({ cascade: true })
   await Database.connection.models.Department.truncate({ cascade: true })
+  await Database.connection.models.ItemInventory.truncate({ cascade: true })
+  await Database.connection.models.User.truncate({ cascade: true })
   await Database.connection.close()
   app.close()
   done()

@@ -1,5 +1,6 @@
 import * as Yup from 'yup'
 import Item from '../models/Item'
+import ItemInventory from '../models/ItemInventory'
 
 class ItemController {
   async index (ctx) {
@@ -73,6 +74,39 @@ class ItemController {
     } catch (err) {
       ctx.status = 400
       ctx.response.body = (err)
+    }
+  }
+
+  async delete (ctx) {
+    const idOnInventory = await ItemInventory.findOne({
+      where: {
+        item_id: ctx.params.id
+      }
+    })
+
+    if (idOnInventory) {
+      ctx.status = 409
+      ctx.response.body = ('Não é possível apagar um item que consta em um inventário.')
+      return
+    }
+
+    try {
+      const { id: itemId, name, department_id: depId } = await Item.findByPk(ctx.params.id)
+
+      await Item.destroy({
+        where: {
+          id: itemId
+        }
+      })
+      ctx.status = 200
+      ctx.response.body = {
+        message: 'Item excluído',
+        name,
+        depId
+      }
+    } catch (err) {
+      ctx.status = 400
+      ctx.response.body = ('Não foi possível excluir o item')
     }
   }
 }

@@ -23,6 +23,7 @@ router.delete('/users', UserController.delete)
 router.post('/item', ItemController.store)
 router.get('/item/:id', ItemController.findById)
 router.put('/item/:id', ItemController.update)
+router.delete('/item/:id', ItemController.delete)
 
 router.post('/department', DepartmentController.store)
 router.put('/department/:id', DepartmentController.update)
