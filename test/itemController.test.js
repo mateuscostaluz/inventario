@@ -110,6 +110,14 @@ describe('Test Items endpoints', () => {
     expect(response.statusCode).toBe(200)
     expect(response.body.name).toBe('Item')
   })
+
+  test('Should response bad request error for delete', async () => {
+    const id = -1
+    const response = await request(app)
+      .delete('/item/' + id)
+      .set('Authorization', 'bearer ' + token)
+    expect(response.statusCode).toBe(400)
+  })
 })
 
 afterAll(async done => {

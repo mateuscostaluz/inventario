@@ -77,9 +77,9 @@ class ItemController {
   }
 
   async delete (ctx) {
-    const { id: itemId, name, department_id: depId } = await Item.findByPk(ctx.params.id)
-
     try {
+      const { id: itemId, name, department_id: depId } = await Item.findByPk(ctx.params.id)
+
       await Item.destroy({
         where: {
           id: itemId
@@ -93,6 +93,7 @@ class ItemController {
       }
     } catch (err) {
       ctx.status = 400
+      ctx.response.body = ('Não foi possível excluir o item')
     }
   }
 }
