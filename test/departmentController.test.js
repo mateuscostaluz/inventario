@@ -19,6 +19,14 @@ describe('Test Departments endpoints', () => {
     token = authResponse.body.token
   })
 
+  test('Should response validation fails error', async () => {
+    const response = await request(app)
+      .post('/department')
+      .set('Authorization', 'bearer ' + token)
+      .send({ name: 'C' })
+    expect(response.statusCode).toBe(400)
+  })
+
   test('Should save an Department', async () => {
     const response = await request(app)
       .post('/department')
@@ -42,6 +50,15 @@ describe('Test Departments endpoints', () => {
       .set('Authorization', 'bearer ' + token)
       .send({ name: 'Desenvolvimento' })
     expect(response.statusCode).toBe(200)
+  })
+
+  test('Should response validation fails error during update', async () => {
+    const { id } = await Department.create({ name: 'Tesouraria' })
+    const response = await request(app)
+      .put('/department/' + id)
+      .set('Authorization', 'bearer ' + token)
+      .send({ name: 'T' })
+    expect(response.statusCode).toBe(400)
   })
 
   test('Should response bad request error for an update', async () => {
