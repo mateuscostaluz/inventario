@@ -63,18 +63,70 @@ describe('Test Users endpoints', () => {
   test('Should update an user', async () => {
     await request(app)
       .post('/users')
-      .send({ name: 'User 01', email: 'user01@email.com', password: 'password' })
+      .send({ name: 'User 01', email: 'user01@email.com', password: 'password1' })
 
     const authResponse = await request(app)
       .post('/auth')
-      .send({ email: 'user01@email.com', password: 'password' })
+      .send({ email: 'user01@email.com', password: 'password1' })
 
     const response = await request(app)
       .put('/users')
       .set('Authorization', 'bearer ' + authResponse.body.token)
-      .send({ name: 'User 01', email: 'user01@email.com' })
-
+      .send(
+        {
+          name: 'User 01',
+          email: 'user01@email.com',
+          password: 'password2',
+          confirmPassword: 'password2',
+          oldPassword: 'password1'
+        })
     expect(response.statusCode).toBe(200)
+  })
+
+  test('Should return Password does not match', async () => {
+    await request(app)
+      .post('/users')
+      .send({ name: 'User 01', email: 'user01@email.com', password: 'password1' })
+
+    const authResponse = await request(app)
+      .post('/auth')
+      .send({ email: 'user01@email.com', password: 'password1' })
+
+    const response = await request(app)
+      .put('/users')
+      .set('Authorization', 'bearer ' + authResponse.body.token)
+      .send(
+        {
+          name: 'User 01',
+          email: 'user01@email.com',
+          password: 'password2',
+          confirmPassword: 'password2',
+          oldPassword: '11111111'
+        })
+    expect(response.body.error).toBe('Password does not match')
+  })
+
+  test('Should return validation fails - email is not valid', async () => {
+    await request(app)
+      .post('/users')
+      .send({ name: 'User 01', email: 'user01@email.com', password: 'password1' })
+
+    const authResponse = await request(app)
+      .post('/auth')
+      .send({ email: 'user01@email.com', password: 'password1' })
+
+    const response = await request(app)
+      .put('/users')
+      .set('Authorization', 'bearer ' + authResponse.body.token)
+      .send(
+        {
+          name: 'User 01',
+          email: 'user01email.com',
+          password: 'password2',
+          confirmPassword: 'password2',
+          oldPassword: 'password1'
+        })
+    expect(response.body.error).toBe('Validation fails')
   })
 
   test('Should response 409 Conflict on Update', async () => {
