@@ -1,5 +1,6 @@
 import * as Yup from 'yup'
 import Item from '../models/Item'
+import ItemInventory from '../models/ItemInventory'
 
 class ItemController {
   async index (ctx) {
@@ -77,6 +78,18 @@ class ItemController {
   }
 
   async delete (ctx) {
+    const idOnInventory = await ItemInventory.findOne({
+      where: {
+        item_id: ctx.params.id
+      }
+    })
+
+    if (idOnInventory) {
+      ctx.status = 409
+      ctx.response.body = ('Não é possível apagar um item que consta em um inventário.')
+      return
+    }
+
     try {
       const { id: itemId, name, department_id: depId } = await Item.findByPk(ctx.params.id)
 
