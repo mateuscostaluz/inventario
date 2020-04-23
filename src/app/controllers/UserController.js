@@ -32,7 +32,6 @@ class UserController {
     const user = await User.create({ name, email, password })
     ctx.status = 201
     ctx.response.body = { id: user.id, name, email }
-    return ctx.response.body
   }
 
   async update (ctx) {
