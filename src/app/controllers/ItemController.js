@@ -25,7 +25,7 @@ class ItemController {
 
   async store (ctx) {
     const schema = Yup.object().shape({
-      name: Yup.string().required().strict(),
+      name: Yup.string().required().min(2).strict(),
       department_id: Yup.number().required().strict()
     })
 
@@ -51,7 +51,7 @@ class ItemController {
 
   async update (ctx) {
     const schema = Yup.object().shape({
-      name: Yup.string().strict(),
+      name: Yup.string().min(2).strict(),
       department_id: Yup.number().strict()
     })
 
