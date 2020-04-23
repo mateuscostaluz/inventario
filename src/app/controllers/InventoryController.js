@@ -1,6 +1,9 @@
 import Inventory from '../models/Inventory'
+import ItemInventory from '../models/ItemInventory'
+import Item from '../models/Item'
 
 import * as Yup from 'yup'
+import User from '../models/User'
 
 class InventoryController {
   async index (ctx) {
@@ -10,6 +13,37 @@ class InventoryController {
     })
     ctx.status = 200
     ctx.response.body = users
+  }
+
+  async findById (ctx) {
+    const { id } = ctx.params
+    const inventory = await Inventory.findByPk(id)
+    const result = await ItemInventory.findAll(
+      {
+        where: {
+          inventory_id: id
+        },
+        attributes: ['id', 'item_found_on_system', 'surplus'],
+        include: [
+          {
+            model: Item,
+            attributes: ['id', 'name']
+          },
+          {
+            model: User,
+            attributes: ['id', 'name']
+          }
+        ]
+      }
+    )
+    ctx.status = 200
+    ctx.response.body = {
+      id: inventory.id,
+      name: inventory.name,
+      description: inventory.description,
+      end_date: inventory.end_date,
+      items: result
+    }
   }
 
   async store (ctx) {
@@ -48,14 +82,13 @@ class InventoryController {
       ctx.response.body = { error: 'Validation fails' }
       return ctx.response.body
     }
-    console.log(ctx.params.id)
 
     try {
       const inventory = await Inventory.findByPk(ctx.params.id)
 
-      const { name, description, end_date } = await inventory.update(ctx.request.body)
+      const { name, description, end_date: endDate } = await inventory.update(ctx.request.body)
       ctx.status = 200
-      ctx.response.body = { name, description, end_date }
+      ctx.response.body = { name, description, end_date: endDate }
       return
     } catch (e) {
       ctx.status = 400
