@@ -3,6 +3,15 @@ import Inventory from '../models/Inventory'
 import * as Yup from 'yup'
 
 class InventoryController {
+  async index (ctx) {
+    const users = await Inventory.findAll({
+      order: ['created_at'],
+      attributes: ['id', 'name', 'end_date']
+    })
+    ctx.status = 200
+    ctx.response.body = users
+  }
+
   async store (ctx) {
     const schema = Yup.object().shape({
       name: Yup.string().required().min(1),
@@ -39,6 +48,7 @@ class InventoryController {
       ctx.response.body = { error: 'Validation fails' }
       return ctx.response.body
     }
+    console.log(ctx.params.id)
 
     try {
       const inventory = await Inventory.findByPk(ctx.params.id)
