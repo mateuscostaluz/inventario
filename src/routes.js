@@ -34,6 +34,7 @@ router.get('/inventory/:id', InventoryController.findById)
 router.post('/inventory', InventoryController.store)
 router.get('/inventory', InventoryController.index)
 router.put('/inventory/:id', InventoryController.update)
+router.delete('/inventory/:id', InventoryController.delete)
 
 router.post('/iteminventory', ItemInventoryController.store)
 
