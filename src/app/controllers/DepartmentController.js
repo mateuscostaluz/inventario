@@ -6,6 +6,22 @@ class DepartmentController {
     ctx.response.body = ({ ok: true })
   }
 
+  async findById (ctx) {
+    try {
+      const department = await Department.findByPk(ctx.params.id)
+
+      if (!department) {
+        ctx.status = 404
+        return
+      }
+      ctx.status = 200
+      ctx.response.body = department
+    } catch (err) {
+      ctx.status = 400
+      ctx.response.body = err
+    }
+  }
+
   async store (ctx) {
     const schema = Yup.object().shape({
       name: Yup.string().required().min(2).strict()
@@ -53,6 +69,26 @@ class DepartmentController {
     } catch (err) {
       ctx.status = 400
       ctx.response.body = (err)
+    }
+  }
+
+  async delete (ctx) {
+    try {
+      const { id: departmentId, name } = await Department.findByPk(ctx.params.id)
+
+      await Department.destroy({
+        where: {
+          id: departmentId
+        }
+      })
+      ctx.status = 200
+      ctx.response.body = {
+        message: 'Departmento excluído',
+        name
+      }
+    } catch (err) {
+      ctx.status = 400
+      ctx.response.body = ('Não foi possível excluir o department')
     }
   }
 }
