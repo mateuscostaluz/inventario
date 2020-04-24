@@ -26,7 +26,9 @@ router.put('/item/:id', ItemController.update)
 router.delete('/item/:id', ItemController.delete)
 
 router.post('/department', DepartmentController.store)
+router.get('/department/:id', DepartmentController.findById)
 router.put('/department/:id', DepartmentController.update)
+router.delete('/department/:id', DepartmentController.delete)
 
 router.get('/inventory/:id', InventoryController.findById)
 router.post('/inventory', InventoryController.store)

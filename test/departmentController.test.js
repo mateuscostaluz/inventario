@@ -69,11 +69,45 @@ describe('Test Departments endpoints', () => {
       .send({ name: 'Desenvolvimento' })
     expect(response.statusCode).toBe(400)
   })
-})
 
-afterAll(async done => {
-  await Database.connection.models.Department.truncate({ cascade: true })
-  await Database.connection.close()
-  app.close()
-  done()
+  test('Should find department by PK', async () => {
+    const { id } = await Department.create({ name: 'RH' })
+    const response = await request(app)
+      .get('/department/' + id)
+      .set('Authorization', 'bearer ' + token)
+    expect(response.statusCode).toBe(200)
+    expect(response.body.name).toBe('RH')
+  })
+
+  test('Should find department by PK and response 404 ', async () => {
+    const id = -1
+    const response = await request(app)
+      .get('/department/' + id)
+      .set('Authorization', 'bearer ' + token)
+    expect(response.statusCode).toBe(404)
+  })
+
+  test('Should delete a department', async () => {
+    const { id } = await Department.create({ name: 'Department' })
+    const response = await request(app)
+      .delete('/department/' + id)
+      .set('Authorization', 'bearer ' + token)
+    expect(response.statusCode).toBe(200)
+    expect(response.body.name).toBe('Department')
+  })
+
+  test('Should response bad request error for delete', async () => {
+    const id = -1
+    const response = await request(app)
+      .delete('/department/' + id)
+      .set('Authorization', 'bearer ' + token)
+    expect(response.statusCode).toBe(400)
+  })
+
+  afterAll(async done => {
+    await Database.connection.models.Department.truncate({ cascade: true })
+    await Database.connection.close()
+    app.close()
+    done()
+  })
 })
