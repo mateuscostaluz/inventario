@@ -7,14 +7,14 @@ class ItemInventoryController {
     const { userId } = ctx.request
     const { inventory_id: invId, item_id: itemId } = ctx.request.body
 
-    const item = await Item.findByPk(itemId)
-    const inventory = await Inventory.findByPk(invId)
-
     if (!(invId && itemId)) {
       ctx.status = 400
       ctx.response.body = { error: 'Parametros Inválidos' }
       return
     }
+
+    const item = await Item.findByPk(itemId)
+    const inventory = await Inventory.findByPk(invId)
 
     if (inventory.end_date !== null) {
       ctx.status = 400

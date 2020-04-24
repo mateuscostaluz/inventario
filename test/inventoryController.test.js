@@ -2,7 +2,11 @@ import request from 'supertest'
 import app from '../src/server'
 import Database from '../src/database/index'
 
+import Department from '../src/app/models/Department'
 import Inventory from '../src/app/models/Inventory'
+import Item from '../src/app/models/Item'
+import ItemInventory from '../src/app/models/ItemInventory'
+import User from '../src/app/models/User'
 
 describe('Test Inventories endpoints', () => {
   let token
@@ -25,6 +29,49 @@ describe('Test Inventories endpoints', () => {
       .set('Authorization', 'bearer ' + token)
       .send({ name: 'Inventario GSW', description: 'inventario cds - GSW' })
     expect(response.statusCode).toBe(201)
+  })
+
+  test('Listar items do inventário', async () => {
+    const department = await Department.create({ name: 'RH' })
+    const item = await Item.create({ name: 'Cadeira', department_id: department.id })
+    const item2 = await Item.create({ name: 'Mesa', department_id: department.id })
+    const item3 = await Item.create({ name: 'Notebook', department_id: department.id })
+    const user = await User.create({ name: 'User', email: 'email@email.com', password: '123' })
+    const inventory = await Inventory.create({ name: 'Inventorio 1', description: 'Descrição', department_id: department.id })
+
+    const data = [
+      {
+        user_id: user.id,
+        department_id: department.id,
+        inventory_id: inventory.id,
+        item_id: item.id,
+        item_found_on_system: true,
+        surplus: false
+      },
+      {
+        user_id: user.id,
+        department_id: department.id,
+        inventory_id: inventory.id,
+        item_id: item2.id,
+        item_found_on_system: true,
+        surplus: false
+      },
+      {
+        user_id: user.id,
+        department_id: department.id,
+        inventory_id: inventory.id,
+        item_id: item3.id,
+        item_found_on_system: true,
+        surplus: false
+      }]
+
+    await ItemInventory.bulkCreate(data)
+
+    const response = await request(app)
+      .get('/inventory/' + inventory.id)
+      .set('Authorization', 'bearer ' + token)
+
+    expect(response.statusCode).toBe(200)
   })
 
   test('Should return bad request - invalid description < 10', async () => {
@@ -99,7 +146,7 @@ describe('Test Inventories endpoints', () => {
     const response = await request(app)
       .put('/inventory/' + inventory.id)
       .set('Authorization', 'bearer ' + token)
-      .send({ name: 'GSW' })
+      .send({ name: 'GSW', description: 'inventario cds - GSW' })
     expect(response.statusCode).toBe(200)
     expect(response.body.name).toBe('GSW')
     expect(response.body.end_date).toBe(null)
@@ -139,7 +186,11 @@ describe('Test Inventories endpoints', () => {
 })
 
 afterAll(async done => {
+  await Database.connection.models.Department.truncate({ cascade: true })
+  await Database.connection.models.Item.truncate({ cascade: true })
+  await Database.connection.models.ItemInventory.truncate({ cascade: true })
   await Database.connection.models.Inventory.truncate({ cascade: true })
+  await Database.connection.models.User.truncate({ cascade: true })
   await Database.connection.close()
   app.close()
   done()

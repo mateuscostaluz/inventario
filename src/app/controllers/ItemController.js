@@ -31,7 +31,7 @@ class ItemController {
 
     if (!(await schema.isValid(ctx.request.body))) {
       ctx.status = 400
-      ctx.response.body = { error: 'Validation fails ' }
+      ctx.response.body = { error: 'Validation fails' }
       return ctx.response.body
     }
 
@@ -57,7 +57,7 @@ class ItemController {
 
     if (!(await schema.isValid(ctx.request.body))) {
       ctx.status = 400
-      ctx.response.body = { error: 'Validation fails ' }
+      ctx.response.body = { error: 'Validation fails' }
       return ctx.response.body
     }
 
