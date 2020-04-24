@@ -2,24 +2,29 @@ import request from 'supertest'
 import app from '../src/server'
 import Database from '../src/database'
 
-import Department from '../src/app/models/Department'
 import Item from '../src/app/models/Item'
+import ItemInventory from '../src/app/models/ItemInventory'
 import Inventory from '../src/app/models/Inventory'
+import User from '../src/app/models/User'
+import Department from '../src/app/models/Department'
 
 describe('Test ItemInventory endpoints', () => {
   let token
   let department
   let item
   let inventory
+  let userId
 
   beforeAll(async () => {
-    await request(app)
-      .post('/users')
-      .send({ name: 'Usuario', email: 'user123@email.com', password: 'password' })
+    const { id: UserId } = await User.create({
+      name: 'Usuario', email: 'user1235@email.com', password: 'password'
+    })
+
+    userId = UserId
 
     const authResponse = await request(app)
       .post('/auth')
-      .send({ email: 'user123@email.com', password: 'password' })
+      .send({ email: 'user1235@email.com', password: 'password' })
 
     token = authResponse.body.token
 
@@ -57,7 +62,11 @@ describe('Test ItemInventory endpoints', () => {
   })
 
   test('Should Response 400 - Item não encontrado', async () => {
-    const inventory2 = await Inventory.create({ name: 'Inventario 02', description: 'Descrição 0001', department_id: department.id })
+    const inventory2 = await Inventory.create({
+      name: 'Inventario 02',
+      description: 'Descrição 0001',
+      department_id: department.id
+    })
     const response = await request(app)
       .post('/iteminventory')
       .set('Authorization', 'bearer ' + token)
@@ -65,13 +74,68 @@ describe('Test ItemInventory endpoints', () => {
     expect(response.statusCode).toBe(400)
     expect(response.body).toStrictEqual({ error: 'Item não encontrado' })
   })
+
+  test('Should Response 200 - Item excluído', async () => {
+    const item2 = await Item.create({
+      name: 'Item',
+      department_id: department.id
+    })
+
+    const { id } = await Inventory.create({
+      name: 'Inventario 01',
+      description: 'Descrição 0001',
+      department_id: department.id
+    })
+
+    await ItemInventory.create({
+      inventory_id: id,
+      item_id: item2.id,
+      user_id: userId,
+      item_found_on_system: true,
+      surplus: false
+    })
+    const response = await request(app)
+      .delete('/iteminventory/' + item2.id)
+      .set('Authorization', 'bearer ' + token)
+    expect(response.statusCode).toBe(200)
+  })
+
+  test('Should Response 400 - Não foi possível excluir o item do inventário', async () => {
+    const response = await request(app)
+      .delete('/iteminventory/' + (-1))
+      .set('Authorization', 'bearer ' + token)
+    expect(response.statusCode).toBe(400)
+  })
+
+  test('Should Response 401 - Impossível excluir item, inventário já encerrado', async () => {
+    const item3 = await Item.create({
+      name: 'Item',
+      department_id: department.id
+    })
+
+    await ItemInventory.create({
+      inventory_id: inventory.id,
+      item_id: item3.id,
+      user_id: userId,
+      item_found_on_system: true,
+      surplus: false
+    })
+    const response = await request(app)
+      .delete('/iteminventory/' + item3.id)
+      .set('Authorization', 'bearer ' + token)
+    expect(response.statusCode).toBe(401)
+    expect(response.body).toStrictEqual({ error: 'Impossível excluir item, inventário já encerrado' })
+  })
 })
 
 afterAll(async done => {
-  await Database.connection.models.Department.truncate({ cascade: true })
-  await Database.connection.models.Inventory.truncate({ cascade: true })
-  await Database.connection.models.Item.truncate({ cascade: true })
-  await Database.connection.models.ItemInventory.truncate({ cascade: true })
+  const { models } = Database.connection
+  await models.Department.truncate({ cascade: true })
+  await models.Item.truncate({ cascade: true })
+  await models.ItemInventory.truncate({ cascade: true })
+  await models.Inventory.truncate({ cascade: true })
+  await models.User.truncate({ cascade: true })
+  await Database.connection.close()
   await Database.connection.close()
   app.close()
   done()
