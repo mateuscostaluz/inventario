@@ -136,7 +136,6 @@ afterAll(async done => {
   await models.Inventory.truncate({ cascade: true })
   await models.User.truncate({ cascade: true })
   await Database.connection.close()
-  await Database.connection.close()
   app.close()
   done()
 })
