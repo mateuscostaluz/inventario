@@ -83,12 +83,12 @@ class DepartmentController {
       })
       ctx.status = 200
       ctx.response.body = {
-        message: 'Departmento excluído',
+        message: 'Departamento excluído',
         name
       }
     } catch (err) {
       ctx.status = 400
-      ctx.response.body = ('Não foi possível excluir o department')
+      ctx.response.body = ('Não foi possível excluir o departamento')
     }
   }
 }
