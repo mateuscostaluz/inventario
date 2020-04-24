@@ -11,7 +11,8 @@ class DepartmentController {
       const department = await Department.findByPk(ctx.params.id)
 
       if (!department) {
-        ctx.status = 404
+        ctx.status = 400
+        ctx.response.body = { error: 'Departamento não encontrado' }
         return
       }
       ctx.status = 200
@@ -29,7 +30,7 @@ class DepartmentController {
 
     if (!(await schema.isValid(ctx.request.body))) {
       ctx.status = 400
-      ctx.response.body = { error: 'Validation fails ' }
+      ctx.response.body = { error: 'Validation fails' }
       return ctx.response.body
     }
 
@@ -53,7 +54,7 @@ class DepartmentController {
 
     if (!(await schema.isValid(ctx.request.body))) {
       ctx.status = 400
-      ctx.response.body = { error: 'Validation fails ' }
+      ctx.response.body = { error: 'Validation fails' }
       return ctx.response.body
     }
 
@@ -83,12 +84,12 @@ class DepartmentController {
       })
       ctx.status = 200
       ctx.response.body = {
-        message: 'Departmento excluído',
+        message: 'Departamento excluído',
         name
       }
     } catch (err) {
       ctx.status = 400
-      ctx.response.body = ('Não foi possível excluir o department')
+      ctx.response.body = ('Não foi possível excluir o departamento')
     }
   }
 }

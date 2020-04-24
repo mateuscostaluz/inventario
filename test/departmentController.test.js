@@ -84,7 +84,7 @@ describe('Test Departments endpoints', () => {
     const response = await request(app)
       .get('/department/' + id)
       .set('Authorization', 'bearer ' + token)
-    expect(response.statusCode).toBe(404)
+    expect(response.statusCode).toBe(400)
   })
 
   test('Should delete a department', async () => {
