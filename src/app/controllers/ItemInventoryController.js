@@ -45,6 +45,32 @@ class ItemInventoryController {
     ctx.status = 201
     ctx.response.body = itemInventory
   }
+
+  async delete (ctx) {
+    try {
+      const itemInventory = await ItemInventory.findOne({
+        where: { item_id: ctx.params.id }
+      })
+
+      const { end_date: endDate } = await Inventory.findOne({
+        where: { id: itemInventory.inventory_id }
+      })
+
+      if (endDate) {
+        ctx.status = 401
+        ctx.response.body = { error: 'Impossível excluir item, inventário já encerrado' }
+        return
+      }
+
+      itemInventory.destroy()
+
+      ctx.status = 200
+      ctx.response.body = itemInventory
+    } catch (err) {
+      ctx.status = 400
+      ctx.response.body = { error: 'Não foi possível excluir o item do inventário' }
+    }
+  }
 }
 
 export default new ItemInventoryController()

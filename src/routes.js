@@ -36,5 +36,6 @@ router.get('/inventory', InventoryController.index)
 router.put('/inventory/:id', InventoryController.update)
 
 router.post('/iteminventory', ItemInventoryController.store)
+router.delete('/iteminventory/:id', ItemInventoryController.delete)
 
 export default router

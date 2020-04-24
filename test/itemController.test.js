@@ -16,14 +16,14 @@ describe('Test Items endpoints', () => {
 
   beforeAll(async () => {
     const { id: UserId } = await User.create({
-      name: 'Usuario', email: 'user123@email.com', password: 'password'
+      name: 'Usuario', email: 'user1234@email.com', password: 'password'
     })
 
     userId = UserId
 
     const authResponse = await request(app)
       .post('/auth')
-      .send({ email: 'user123@email.com', password: 'password' })
+      .send({ email: 'user1234@email.com', password: 'password' })
 
     token = authResponse.body.token
 
@@ -143,7 +143,7 @@ describe('Test Items endpoints', () => {
     const response = await request(app)
       .delete('/item/' + id)
       .set('Authorization', 'bearer ' + token)
-    expect(response.statusCode).toBe(409)
+    expect(response.statusCode).toBe(401)
   })
 })
 
