@@ -85,7 +85,7 @@ class ItemController {
     })
 
     if (idOnInventory) {
-      ctx.status = 409
+      ctx.status = 401
       ctx.response.body = ('Não é possível apagar um item que consta em um inventário.')
       return
     }
