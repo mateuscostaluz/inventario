@@ -27,7 +27,7 @@ describe('Test Inventories endpoints', () => {
     const response = await request(app)
       .post('/inventory')
       .set('Authorization', 'bearer ' + token)
-      .send({ name: 'Inventario GSW', description: 'inventario cds - GSW' })
+      .send({ name: 'Inventario 01', description: 'Descrição 0001' })
     expect(response.statusCode).toBe(201)
   })
 
@@ -78,7 +78,7 @@ describe('Test Inventories endpoints', () => {
     const response = await request(app)
       .post('/inventory')
       .set('Authorization', 'bearer ' + token)
-      .send({ name: 'Inventario GSW', description: 'cds - GSW' })
+      .send({ name: 'Inventario 01', description: 'Descrição' })
     expect(response.statusCode).toBe(400)
   })
 
@@ -86,7 +86,7 @@ describe('Test Inventories endpoints', () => {
     const response = await request(app)
       .post('/inventory')
       .set('Authorization', 'bearer ' + token)
-      .send({ name: '', description: 'inventario cds - GSW' })
+      .send({ name: '', description: 'Descrição 0001' })
     expect(response.statusCode).toBe(400)
   })
 
@@ -94,7 +94,7 @@ describe('Test Inventories endpoints', () => {
     const response = await request(app)
       .post('/inventory')
       .set('Authorization', 'bearer ' + token)
-      .send({ name: '', description: 'inventario cds - GSW', end_date: '22/05/2020' })
+      .send({ name: '', description: 'Descrição 0001', end_date: '22/05/2020' })
     expect(response.statusCode).toBe(400)
   })
 
@@ -102,7 +102,7 @@ describe('Test Inventories endpoints', () => {
     const response = await request(app)
       .post('/inventory')
       .set('Authorization', 'bearer ' + token)
-      .send({ name: 'gsw', description: 'inventario cds - GSW', end_date: '20-06-20T22:36:30' })
+      .send({ name: 'Inventario 01', description: 'Descrição 0001', end_date: '20-06-20T22:36:30' })
     expect(response.statusCode).toBe(400)
   })
 
@@ -110,7 +110,7 @@ describe('Test Inventories endpoints', () => {
     const response = await request(app)
       .post('/inventory')
       .set('Authorization', 'bearer ' + token)
-      .send({ name: 'gsw', description: 'inventario cds - GSW', end_date: '2020-05-20T22:36:30' })
+      .send({ name: 'Inventario 01', description: 'Descrição 0001', end_date: '2020-05-20T22:36:30' })
     expect(response.statusCode).toBe(201)
   })
 
@@ -118,7 +118,7 @@ describe('Test Inventories endpoints', () => {
     const response = await request(app)
       .post('/inventory')
       .set('Authorization', 'bearer ' + token)
-      .send({ name: 'Inventario GSW' })
+      .send({ name: 'Inventario 01' })
     expect(response.statusCode).toBe(400)
   })
 
@@ -126,7 +126,7 @@ describe('Test Inventories endpoints', () => {
     const response = await request(app)
       .post('/inventory')
       .set('Authorization', 'bearer ' + token)
-      .send({ description: 'inventario cds - GSW' })
+      .send({ description: 'Descrição 0001' })
     expect(response.statusCode).toBe(400)
   })
 
@@ -134,28 +134,28 @@ describe('Test Inventories endpoints', () => {
     const response = await request(app)
       .post('/inventory')
       .set('Authorization', 'bearer ' + token)
-      .send({ nome: 'Inventario GSW', description: 'inventario cds - GSW' })
+      .send({ nome: 'Inventario 01', description: 'Descrição 0001' })
     expect(response.statusCode).toBe(400)
   })
 
   test('Should update name an Inventory', async () => {
-    const inventory = await Inventory.create({ name: 'Inventario GSW', description: 'inventario cds - GSW' })
+    const inventory = await Inventory.create({ name: 'Inventario 01', description: 'Descrição 0001' })
 
-    expect(inventory.name).toBe('Inventario GSW')
+    expect(inventory.name).toBe('Inventario 01')
 
     const response = await request(app)
       .put('/inventory/' + inventory.id)
       .set('Authorization', 'bearer ' + token)
-      .send({ name: 'GSW', description: 'inventario cds - GSW' })
+      .send({ name: 'Inventario 01', description: 'Descrição 0001' })
     expect(response.statusCode).toBe(200)
-    expect(response.body.name).toBe('GSW')
+    expect(response.body.name).toBe('Inventario 01')
     expect(response.body.end_date).toBe(null)
   })
 
   test('Should response bad request - update invalid name', async () => {
-    const inventory = await Inventory.create({ name: 'Inventario GSW', description: 'inventario cds - GSW' })
+    const inventory = await Inventory.create({ name: 'Inventario 01', description: 'Descrição 0001' })
 
-    expect(inventory.name).toBe('Inventario GSW')
+    expect(inventory.name).toBe('Inventario 01')
 
     const response = await request(app)
       .put('/inventory/' + inventory.id)
@@ -165,7 +165,7 @@ describe('Test Inventories endpoints', () => {
   })
 
   test('Should update end_date an Inventory', async () => {
-    const inventory = await Inventory.create({ name: 'Inventario GSW', description: 'inventario cds - GSW' })
+    const inventory = await Inventory.create({ name: 'Inventario 01', description: 'Descrição 0001' })
 
     const response = await request(app)
       .put('/inventory/' + inventory.id)
@@ -182,6 +182,41 @@ describe('Test Inventories endpoints', () => {
       .set('Authorization', 'bearer ' + token)
       .send({ end_date: '2020-04-20T22:36:30.001Z' })
     expect(response.status).toBe(400)
+  })
+
+  test('Should delete an Inventory', async () => {
+    const { id } = await Inventory.create({ name: 'Inventario 01', description: 'Descrição 0001' })
+    const response = await request(app)
+      .delete('/inventory/' + id)
+      .set('Authorization', 'bearer ' + token)
+    expect(response.statusCode).toBe(200)
+    expect(response.body.name).toBe('Inventario 01')
+  })
+
+  test('Should return error while deleting inventory', async () => {
+    const response = await request(app)
+      .delete('/inventory/' + 1)
+      .set('Authorization', 'bearer ' + token)
+    expect(response.statusCode).toBe(400)
+    expect(response.body.error).toBe('Erro ao deletar inventário')
+  })
+
+  test('Should return ', async () => {
+    const department = await Department.create({ name: 'Depart01' })
+    const item = await Item.create({ name: 'Cadeira', department_id: department.id })
+    const inventory = await Inventory.create({ name: 'Inventario 01', description: 'Descrição 0001', department_id: department.id })
+
+    let response = await request(app)
+      .post('/iteminventory')
+      .set('Authorization', 'bearer ' + token)
+      .send({ inventory_id: inventory.id, item_id: item.id })
+    expect(response.statusCode).toBe(201)
+
+    response = await request(app)
+      .delete('/inventory/' + inventory.id)
+      .set('Authorization', 'bearer ' + token)
+    expect(response.statusCode).toBe(401)
+    expect(response.body.error).toBe('Não é possível apagar um inventario que contenha item')
   })
 })
 
