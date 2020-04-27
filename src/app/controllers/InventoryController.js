@@ -79,7 +79,7 @@ class InventoryController {
 
     if (!await schema.isValid(ctx.request.body)) {
       ctx.status = 400
-      ctx.response.body = { error: 'Validation fails' }
+      ctx.response.body = { error: 'Parametros Inválidos' }
       return ctx.response.body
     }
 
@@ -93,6 +93,38 @@ class InventoryController {
     } catch (e) {
       ctx.status = 400
       ctx.response.body = { error: `Não foi atualizar os dados : ${e}` }
+    }
+  }
+
+  async delete (ctx) {
+    const thereIsItemOnInventory = await ItemInventory.findOne({
+      where: {
+        inventory_id: ctx.params.id
+      }
+    })
+
+    if (thereIsItemOnInventory) {
+      ctx.status = 401
+      ctx.response.body = { error: 'Não é possível apagar um inventario que contenha item' }
+      return
+    }
+
+    try {
+      const { id, name } = await Inventory.findByPk(ctx.params.id)
+
+      await Inventory.destroy({
+        where: {
+          id: id
+        }
+      })
+      ctx.status = 200
+      ctx.response.body = {
+        name,
+        id
+      }
+    } catch (err) {
+      ctx.status = 400
+      ctx.response.body = { error: 'Erro ao deletar inventário' }
     }
   }
 }
