@@ -8,6 +8,8 @@ import Inventory from '../src/app/models/Inventory'
 import ItemInventory from '../src/app/models/ItemInventory'
 import User from '../src/app/models/User'
 
+import truncate from './util/truncate'
+
 describe('Test Items endpoints', () => {
   let token
   let depId
@@ -148,10 +150,7 @@ describe('Test Items endpoints', () => {
 })
 
 afterAll(async done => {
-  await Database.connection.models.Item.truncate({ cascade: true })
-  await Database.connection.models.Department.truncate({ cascade: true })
-  await Database.connection.models.ItemInventory.truncate({ cascade: true })
-  await Database.connection.models.User.truncate({ cascade: true })
+  await truncate()
   await Database.connection.close()
   app.close()
   done()

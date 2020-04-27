@@ -5,6 +5,8 @@ import User from '../src/app/models/User'
 import Department from '../src/app/models/Department'
 import Database from '../src/database/index'
 
+import truncate from './util/truncate'
+
 test('Creating ItemInventory', async done => {
   // TODO: Criar uma instancia da classe ItemInventory
   const department = await Department.create({ name: 'RH' })
@@ -26,12 +28,7 @@ test('Creating ItemInventory', async done => {
 })
 
 afterAll(async done => {
-  const { models } = Database.connection
-  await models.Department.truncate({ cascade: true })
-  await models.Item.truncate({ cascade: true })
-  await models.ItemInventory.truncate({ cascade: true })
-  await models.Inventory.truncate({ cascade: true })
-  await models.User.truncate({ cascade: true })
+  await truncate()
   await Database.connection.close()
   done()
 })
