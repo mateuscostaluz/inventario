@@ -22,16 +22,116 @@ securityDefinitions:
     flow: implicit
     authorizationUrl: http://localhost:3333/auth
     
-security:
-  - bearerAuth: []
-  
 produces:
   - application/json
 
 tags:
+  - name: User
   - name: Item
+  - name: Inventory
+  - name: Department
+  - name: ItemInventory
 
 paths:
+  '/users':
+      get:
+        tags:
+          - User
+        summary: Lista todos os usuários
+        responses:
+          200:
+            description: Success
+            schema:
+              $ref: "#/definitions/User"
+      post:
+        tags:
+          - User
+        summary: Adiciona um novo usuário
+        consumes:
+          - application/json
+        security:
+        - bearerAuth: []
+        parameters:
+          - in: body
+            name: user
+            description: O usuário a ser criado
+            schema:
+              type: object
+              required:
+                - name
+                - email
+                - password
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+        responses:
+          201:
+            description: Created
+            schema:
+              $ref: "#/definitions/User"
+          400:
+            description: Erro de cadastro
+          409:
+            description: Email já existe
+      put:
+        tags:
+          - User
+        security:
+        - bearerAuth: []
+        summary: Atualiza os dados do usuário logado
+        consumes:
+          - application/json
+        parameters:
+          - in: header
+            name: Authorization
+            type: string
+            required: true
+          - in: body
+            name: user
+            description: O usuário a atualizar
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                oldPassword:
+                  type: string
+                  description: Obrigatorio apenas se 'password' for informado
+                password:
+                  type: string
+                  description: Nova senha
+                confirmPassword:
+                  type: string
+                  description: Nova senha. Obrigatório apenas se 'password' for informado
+        responses:
+          200:
+            description: Success
+            schema:
+              $ref: "#/definitions/User"
+          400:
+            description: Erro de validação
+          409:
+            description: Email já cadastrado
+      delete:
+        tags:
+        - User
+        security:
+        - bearerAuth: []
+        parameters:
+          - in: header
+            name: Authorization
+            type: string
+            required: true
+        summary: Altera o status do usuário logado para inativo
+        responses:
+          204:
+            description: Success
   '/item':
     post:
       tags:
@@ -204,17 +304,101 @@ paths:
           description: Requisição não autorizada
         500:
           description: Erro interno no servidor
-    
-    
-    
+
+  '/iteminventory':
+    post:
+      tags:
+        - ItemInventory
+      summary: Insere item em inventário
+      description: Insere um item em um inventário utilizando os ids de item e inventário
+      consumes:
+        - application/json
+      parameters:
+        - in: header
+          name: Authorization
+          type: string
+          required: true
+        - in: body
+          name: item_
+          schema:
+              type: object
+              properties:
+                inventory_id:
+                  $ref: '#/definitions/Inventory/properties/id'
+                item_id:
+                  $ref: '#/definitions/Item/properties/id'
+      responses:
+        201:
+          description: Item inserido no inventário com sucesso
+          schema:
+            type: object
+            properties:
+              itemInventory:
+                $ref: '#/definitions/ItemInventory'
+        400:
+          description: Requisição inválida
+        401:
+          description: Requisição não autorizada
+        500:
+          description: Erro interno no servidor
+  
+  '/iteminventory/{itemId}':
+    delete:
+      tags:
+        - ItemInventory
+      summary: Apaga um item de um inventário
+      description: Apaga o item do inventário através da referência do item.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          type: string
+          required: true
+        - in: path
+          name: itemId
+          type: integer
+          format: int32
+          required: true
+      responses:
+        200:
+          description: Item excluído
+          schema:
+            type: object
+            properties:
+              itemOnInventory:
+                $ref: '#/definitions/Item'
+        400:
+          description: Requisição inválida
+        401:
+          description: Requisição não autorizada
+        500:
+          description: Erro interno no servidor
+
+# complex objects have schema definitions
 definitions:
+  User:
+    
+    properties:
+      id:
+        type: integer
+        example: 1
+      name:
+        type: string
+        example: Usuário 01
+      email:
+        type: string
+        example: usuario@email.com
+      active:
+        type: boolean
+        example: true
   Item:
     type: object
     properties:
       id:
         type: integer
         format: int32
-        example: 1
+        example: 2
       name:
         type: string
         example: Cadeira01
@@ -227,8 +411,35 @@ definitions:
       id:
         type: integer
         format: int32
-        example: 2
+        example: 3
       name:
         type: string
         example: Departamento01
-    
+  
+  Inventory:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+        example: 4
+  
+  ItemInventory:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+        example: 5
+      inventory_id:
+        $ref: '#/definitions/Inventory/properties/id'
+      item_id:
+        $ref: '#/definitions/Item/properties/id'
+      user_id:
+        $ref: '#/definitions/User/properties/id'
+      item_found_on_system:
+        type: boolean
+        example: true
+      surplus:
+        type: boolean
+        example: false
