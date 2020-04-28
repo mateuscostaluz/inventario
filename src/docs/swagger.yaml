@@ -1,0 +1,234 @@
+swagger: '2.0'
+
+schemes:
+  - http
+  
+host: localhost:3333
+basePath: /
+
+info:
+  version: 1.0.0
+  title: Inventario Api
+  description: Administra o processo de inventariado de departamentos.
+  termsOfService: http://localhost:3333/terms
+  contact:
+    name: Suporte
+    url: http://localhost:3333/suporte
+    email: suporte@gsw.com.br
+    
+securityDefinitions:
+  bearerAuth:
+    type: oauth2
+    flow: implicit
+    authorizationUrl: http://localhost:3333/auth
+    
+security:
+  - bearerAuth: []
+  
+produces:
+  - application/json
+
+tags:
+  - name: Item
+
+paths:
+  '/item':
+    post:
+      tags:
+        - Item
+      summary: Cadastra item
+      description: Cadastra um item na base de dados
+      consumes:
+        - application/json
+      operationId: store
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          type: string
+          required: true
+        - in: body
+          name: item_
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                example: Cadeira01
+              department_id:
+                $ref: '#/definitions/Department/properties/id'
+      responses:
+        201:
+          description: Created
+          schema:
+            $ref: '#/definitions/Item'
+        400:
+          description: Requisição inválida
+        401:
+          description: Requisição não autorizada
+        500:
+          description: Erro interno no servidor
+  
+  '/item/{itemId}':
+    get:
+      tags:
+        - Item
+      summary: Busca item por id
+      description: Retorna um item através do id informado
+      operationId: findById
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          type: string
+          required: true
+        - in: path
+          name: itemId
+          type: integer
+          format: int32
+          required: true
+          
+      responses:
+        200:
+          description: OK
+          schema:
+            type: object
+            properties:
+              id:
+                type: integer
+                format: int32
+                example: 1
+              name:
+                type: string
+                example: Cadeira01
+              department_id:
+                $ref: '#/definitions/Department/properties/id'
+        400:
+          description: Requisição inválida
+        401:
+          description: Requisição não autorizada
+        500:
+          description: Erro interno no servidor
+          
+          
+    put:
+      tags:
+        - Item
+      summary: Atualiza item
+      description: Atualiza o item informado pelo id
+      consumes:
+        - application/json
+      operationId: update
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          type: string
+          required: true
+        - in: path
+          name: itemId
+          type: integer
+          format: int32
+          required: true
+        - in: body
+          name: item_
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                example: Cadeira01
+              department_id:
+                $ref: '#/definitions/Department/properties/id'
+      responses:
+        200:
+          description: Item atualizado com sucesso
+          schema:
+            type: object
+            properties:
+              id:
+                type: integer
+                format: int32
+                example: 1
+              name:
+                type: string
+                example: Cadeira01
+              department_id:
+                $ref: '#/definitions/Department/properties/id'
+        400:
+          description: Requisição inválida
+        401:
+          description: Requisição não autorizada
+        500:
+          description: Erro interno no servidor
+          
+          
+    delete:
+      tags:
+        - Item
+      summary: Apaga Item
+      description: Apaga o item informado pelo id
+      operationId: delete
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          type: string
+          required: true
+        - in: path
+          name: itemId
+          type: integer
+          format: int32
+          required: true
+      responses:
+        200:
+          description: Item excluído
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Item excluído
+              name:
+                type: string
+                example: Cadeira01
+              department_id:
+                $ref: '#/definitions/Department/properties/id'
+        400:
+          description: Requisição inválida
+        401:
+          description: Requisição não autorizada
+        500:
+          description: Erro interno no servidor
+    
+    
+    
+definitions:
+  Item:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+        example: 1
+      name:
+        type: string
+        example: Cadeira01
+      department_id:
+        $ref: '#/definitions/Department/properties/id'
+  
+  Department:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+        example: 2
+      name:
+        type: string
+        example: Departamento01
+    
