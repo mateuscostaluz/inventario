@@ -22,14 +22,13 @@ securityDefinitions:
     flow: implicit
     authorizationUrl: http://localhost:3333/auth
     
-security:
-  - bearerAuth: []
-  
 produces:
   - application/json
 
 tags:
+  - name: User
   - name: Item
+  - name: Department
 
 paths:
   '/item':
@@ -204,10 +203,118 @@ paths:
           description: Requisição não autorizada
         500:
           description: Erro interno no servidor
-    
-    
-    
+
+  '/users':
+      get:
+        tags:
+          - User
+        security:
+          - bearerAuth: []
+        summary: Lista todos os usuários
+        responses:
+          200:
+            description: Success
+            schema:
+              $ref: "#/definitions/User"
+      post:
+        tags:
+          - User
+        summary: Adiciona um novo usuário
+        consumes:
+          - application/json
+        parameters:
+          - in: header
+            name: Authorization
+            type: string
+          - in: body
+            name: user
+            description: O usuário a ser criado
+            schema:
+              type: object
+              required:
+                - name
+                - email
+                - password
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+        responses:
+          201:
+            description: Created
+            schema:
+              $ref: "#/definitions/User"
+          400:
+            description: Erro de cadastro
+          409:
+            description: Email já existe
+      put:
+        tags:
+          - User
+        security:
+        - bearerAuth: []
+        summary: Atualiza os dados do usuário logado
+        consumes:
+          - application/json
+        produces:
+          - application/json
+        parameters:
+          - in: body
+            name: user
+            description: O usuário a atualizar
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                oldPassword:
+                  type: string
+                  description: Obrigatorio apenas se 'password' for informado
+                password:
+                  type: string
+                  description: Nova senha
+                confirmPassword:
+                  type: string
+                  description: Nova senha. Obrigatório apenas se 'password' for informado
+        responses:
+          200:
+            description: Success
+            schema:
+              $ref: "#/definitions/User"
+          400:
+            description: Erro de validação
+          409:
+            description: Email já cadastrado
+      delete:
+        tags:
+        - User
+        security:
+        - bearerAuth: []
+        summary: Altera o status do usuário logado para inativo
+        responses:
+          204:
+            description: Success
+# complex objects have schema definitions
 definitions:
+  User:
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Usuário 01
+        email:
+          type: string
+          example: usuario@email.com
+        active:
+          type: boolean
+          example: true
   Item:
     type: object
     properties:
@@ -231,4 +338,3 @@ definitions:
       name:
         type: string
         example: Departamento01
-    

@@ -3,7 +3,9 @@ import * as Yup from 'yup'
 
 class UserController {
   async index (ctx) {
-    const users = await User.findAll()
+    const users = await User.findAll({
+      attributes: ['id', 'name', 'email', 'active']
+    })
     ctx.status = 200
     ctx.response.body = users
   }
@@ -31,7 +33,7 @@ class UserController {
 
     const user = await User.create({ name, email, password })
     ctx.status = 201
-    ctx.response.body = { id: user.id, name, email }
+    ctx.response.body = { id: user.id, name, email, active: user.active }
   }
 
   async update (ctx) {
@@ -83,6 +85,7 @@ class UserController {
 
     await user.save()
     ctx.status = 200
+    ctx.request.body = { id: user.id, name, email, active }
   }
 
   async delete (ctx) {
