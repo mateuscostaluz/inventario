@@ -26,6 +26,7 @@ produces:
   - application/json
 
 tags:
+  - name: Authorization
   - name: User
   - name: Item
   - name: Department
@@ -735,6 +736,45 @@ paths:
           description: Requisição inválida
         401:
           description: Requisição não autorizada
+        500:
+          description: Erro interno no servidor
+
+  '/auth':
+    post:
+      tags:
+        - Authorization
+      summary: Autenticação de usuário
+      description: Autentica o usuário e gera um token
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: item_
+          schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: usuario@email.com
+                password:
+                  type: string
+                  example: 123456
+      responses:
+        201:
+          description: Item inserido no inventário com sucesso
+          schema:
+            type: object
+            properties:
+              id:
+                $ref: '#/definitions/User/properties/id'
+              email:
+                type: string
+                example: usuario@email.com
+              token:
+                type: string
+                example: sahf%$#gdskGgdj%kdkdsd.apdoerclsclkahskb.%&8llfsdk*nsl*
+        401:
+          description: Usuário não encontrado ou senha inválida
         500:
           description: Erro interno no servidor
 
