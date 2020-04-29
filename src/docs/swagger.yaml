@@ -29,6 +29,7 @@ tags:
   - name: User
   - name: Item
   - name: Department
+  - name: Inventory
 
 paths:
   '/item':
@@ -458,6 +459,216 @@ paths:
         responses:
           204:
             description: Success
+
+  '/inventory':
+    get:
+        tags:
+          - Inventory
+        summary: Retorna inventários
+        description: Retorna todos os inventários da base de dados
+        consumes:
+          - application/json
+        operationId: indexInventories
+        security:
+          - bearerAuth: []
+        responses:
+          200:
+            description: Success
+            schema:
+              $ref: "#/definitions/Inventory"
+    post:
+      tags:
+        - Inventory
+      summary: Cadastra inventário
+      description: Cadastra um inventário na base de dados
+      consumes:
+        - application/json
+      operationId: storeInventory
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          type: string
+          required: true
+        - in: body
+          name: Inventory
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                example: Nome Departamento
+              description:
+                type: string
+                example: Descricao0001
+              department_id:
+                $ref: '#/definitions/Department/properties/id'
+      responses:
+        201:
+          description: Created
+          schema:
+            type: object
+            properties:
+              id:
+                type: integer
+                example: 1
+              name:
+                type: string
+                example: Nome Departamento
+        400:
+          description: Erro de validação
+        500:
+          description: Erro interno no servidor
+
+  '/inventory/{inventoryId}':
+    get:
+      tags:
+        - Inventory
+      summary: Busca inventário por id
+      description: Retorna um inventário através do id informado
+      operationId: findByIdInventory
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          type: string
+          required: true
+        - in: path
+          name: inventoryId
+          type: integer
+          format: int32
+          required: true
+      responses:
+        200:
+          description: OK
+          schema:
+            type: object
+            properties:
+              id:
+                type: integer
+                example: 1
+              name:
+                type: string
+                example: Nome Departamento
+              description:
+                type: string
+                example: Decricao0001
+              end_date:
+                type: string
+                example: null
+              Items: 
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  name:
+                    type: string
+                    example: Cadeira01
+                    
+    put:
+      tags:
+        - Inventory
+      summary: Atualiza inventário
+      description: Atualiza o inventário informado pelo id
+      consumes:
+        - application/json
+      operationId: updateInventory
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          type: string
+          required: true
+        - in: path
+          name: inventoryId
+          type: integer
+          format: int32
+          required: true
+        - in: body
+          name: Inventory
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                example: Cadeira01
+              description:
+                type: string
+                example: Descricao0001
+              end_date:
+                type: string
+                example: '2020-05-20T22:36:30'
+              department_id:
+                $ref: '#/definitions/Department/properties/id'
+      responses:
+        200:
+          description: Inventário atualizado com sucesso
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                example: Nome Departamento
+              description:
+                type: string
+                example: Decricao0001
+              end_date:
+                type: string
+                example: '2020-05-20T22:36:30'
+        400:
+          description: Requisição inválida
+  
+    delete:
+      tags:
+        - Inventory
+      summary: Apaga inventário
+      description: Apaga o inventário pelo id informado
+      operationId: deleteInventory
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          type: string
+          required: true
+        - in: path
+          name: inventoryId
+          type: integer
+          format: int32
+          required: true
+      responses:
+        200:
+          description: Inventário excluído
+          schema:
+            type: object
+            properties:
+              id:
+                type: integer
+                example: 1
+              name:
+                type: string
+                example: Nome Inventario
+        400:
+          description: Erro ao deletar inventário
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: Erro ao deletar inventário
+        401:
+          description: Não é possível apagar um inventário que contenha item
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: Não é possível apagar um inventário que contenha item
+
 # complex objects have schema definitions
 definitions:
   User:
@@ -486,7 +697,6 @@ definitions:
         example: Cadeira01
       department_id:
         $ref: '#/definitions/Department/properties/id'
-
   Department:
     type: object
     properties:
@@ -497,3 +707,18 @@ definitions:
       name:
         type: string
         example: RH
+  Inventory:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+        example: 1
+      name:
+        type: string
+        example: Departamento
+      end_date:
+        type: string
+        example: null
+      department_id:
+        $ref: '#/definitions/Department/properties/id'
