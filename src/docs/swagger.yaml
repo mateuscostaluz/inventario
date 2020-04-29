@@ -26,7 +26,7 @@ produces:
   - application/json
 
 tags:
-  - name: Authorization
+  - name: Authentication
   - name: User
   - name: Item
   - name: Department
@@ -742,7 +742,7 @@ paths:
   '/auth':
     post:
       tags:
-        - Authorization
+        - Authentication
       summary: Autenticação de usuário
       description: Autentica o usuário e gera um token
       consumes:
