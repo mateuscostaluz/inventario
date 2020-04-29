@@ -30,6 +30,7 @@ tags:
   - name: Item
   - name: Department
   - name: Inventory
+  - name: ItemInventory
 
 paths:
   '/item':
@@ -40,7 +41,6 @@ paths:
       description: Cadastra um item na base de dados
       consumes:
         - application/json
-      operationId: store
       security:
         - bearerAuth: []
       parameters:
@@ -76,7 +76,6 @@ paths:
         - Item
       summary: Busca item por id
       description: Retorna um item através do id informado
-      operationId: findById
       security:
         - bearerAuth: []
       parameters:
@@ -119,7 +118,6 @@ paths:
       description: Atualiza o item informado pelo id
       consumes:
         - application/json
-      operationId: update
       security:
         - bearerAuth: []
       parameters:
@@ -169,7 +167,6 @@ paths:
         - Item
       summary: Apaga item
       description: Apaga o item informado pelo id
-      operationId: delete
       security:
         - bearerAuth: []
       parameters:
@@ -211,7 +208,6 @@ paths:
       description: Cadastra um departamento na base de dados
       consumes:
         - application/json
-      operationId: store
       security:
         - bearerAuth: []
       parameters:
@@ -245,7 +241,6 @@ paths:
         - Department
       summary: Busca departamento por id
       description: Retorna um departamento através do id informado
-      operationId: findById
       security:
         - bearerAuth: []
       parameters:
@@ -286,7 +281,6 @@ paths:
       description: Atualiza o departamento informado pelo id
       consumes:
         - application/json
-      operationId: update
       security:
         - bearerAuth: []
       parameters:
@@ -332,7 +326,6 @@ paths:
         - Department
       summary: Apaga departamento
       description: Apaga o departamento informado pelo id
-      operationId: delete
       security:
         - bearerAuth: []
       parameters:
@@ -368,8 +361,6 @@ paths:
       get:
         tags:
           - User
-        security:
-          - bearerAuth: []
         summary: Lista todos os usuários
         responses:
           200:
@@ -382,10 +373,9 @@ paths:
         summary: Adiciona um novo usuário
         consumes:
           - application/json
+        security:
+        - bearerAuth: []
         parameters:
-          - in: header
-            name: Authorization
-            type: string
           - in: body
             name: user
             description: O usuário a ser criado
@@ -419,9 +409,11 @@ paths:
         summary: Atualiza os dados do usuário logado
         consumes:
           - application/json
-        produces:
-          - application/json
         parameters:
+          - in: header
+            name: Authorization
+            type: string
+            required: true
           - in: body
             name: user
             description: O usuário a atualizar
@@ -455,6 +447,11 @@ paths:
         - User
         security:
         - bearerAuth: []
+        parameters:
+          - in: header
+            name: Authorization
+            type: string
+            required: true
         summary: Altera o status do usuário logado para inativo
         responses:
           204:
@@ -668,8 +665,79 @@ paths:
               error:
                 type: string
                 example: Não é possível apagar um inventário que contenha item
+                
+  '/iteminventory':
+    post:
+      tags:
+        - ItemInventory
+      summary: Insere item em inventário
+      description: Insere um item em um inventário utilizando os ids de item e inventário
+      consumes:
+        - application/json
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          type: string
+          required: true
+        - in: body
+          name: item_
+          schema:
+              type: object
+              properties:
+                inventory_id:
+                  $ref: '#/definitions/Inventory/properties/id'
+                item_id:
+                  $ref: '#/definitions/Item/properties/id'
+      responses:
+        201:
+          description: Item inserido no inventário com sucesso
+          schema:
+            type: object
+            properties:
+              itemInventory:
+                $ref: '#/definitions/ItemInventory'
+        400:
+          description: Requisição inválida
+        401:
+          description: Requisição não autorizada
+        500:
+          description: Erro interno no servidor
+  
+  '/iteminventory/{itemId}':
+    delete:
+      tags:
+        - ItemInventory
+      summary: Apaga um item de um inventário
+      description: Apaga o item do inventário através da referência do item.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          type: string
+          required: true
+        - in: path
+          name: itemId
+          type: integer
+          format: int32
+          required: true
+      responses:
+        200:
+          description: Item excluído
+          schema:
+            type: object
+            properties:
+              itemOnInventory:
+                $ref: '#/definitions/Item'
+        400:
+          description: Requisição inválida
+        401:
+          description: Requisição não autorizada
+        500:
+          description: Erro interno no servidor
 
-# complex objects have schema definitions
 definitions:
   User:
       properties:
@@ -685,6 +753,7 @@ definitions:
         active:
           type: boolean
           example: true
+          
   Item:
     type: object
     properties:
@@ -697,6 +766,7 @@ definitions:
         example: Cadeira01
       department_id:
         $ref: '#/definitions/Department/properties/id'
+        
   Department:
     type: object
     properties:
@@ -707,6 +777,7 @@ definitions:
       name:
         type: string
         example: RH
+        
   Inventory:
     type: object
     properties:
@@ -722,3 +793,23 @@ definitions:
         example: null
       department_id:
         $ref: '#/definitions/Department/properties/id'
+        
+  ItemInventory:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+        example: 5
+      inventory_id:
+        $ref: '#/definitions/Inventory/properties/id'
+      item_id:
+        $ref: '#/definitions/Item/properties/id'
+      user_id:
+        $ref: '#/definitions/User/properties/id'
+      item_found_on_system:
+        type: boolean
+        example: true
+      surplus:
+        type: boolean
+        example: false
