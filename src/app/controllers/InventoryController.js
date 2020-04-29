@@ -7,12 +7,12 @@ import User from '../models/User'
 
 class InventoryController {
   async index (ctx) {
-    const users = await Inventory.findAll({
+    const inventory = await Inventory.findAll({
       order: ['created_at'],
       attributes: ['id', 'name', 'end_date']
     })
     ctx.status = 200
-    ctx.response.body = users
+    ctx.response.body = inventory
   }
 
   async findById (ctx) {
