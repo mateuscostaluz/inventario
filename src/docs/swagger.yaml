@@ -28,11 +28,335 @@ produces:
 tags:
   - name: User
   - name: Item
-  - name: Inventory
   - name: Department
+  - name: Inventory
   - name: ItemInventory
 
 paths:
+  '/item':
+    post:
+      tags:
+        - Item
+      summary: Cadastra item
+      description: Cadastra um item na base de dados
+      consumes:
+        - application/json
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          type: string
+          required: true
+        - in: body
+          name: item_
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                example: Cadeira01
+              department_id:
+                $ref: '#/definitions/Department/properties/id'
+      responses:
+        201:
+          description: Created
+          schema:
+            $ref: '#/definitions/Item'
+        400:
+          description: Requisição inválida
+        401:
+          description: Requisição não autorizada
+        500:
+          description: Erro interno no servidor
+
+  '/item/{itemId}':
+    get:
+      tags:
+        - Item
+      summary: Busca item por id
+      description: Retorna um item através do id informado
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          type: string
+          required: true
+        - in: path
+          name: itemId
+          type: integer
+          format: int32
+          required: true
+
+      responses:
+        200:
+          description: OK
+          schema:
+            type: object
+            properties:
+              id:
+                type: integer
+                format: int32
+                example: 1
+              name:
+                type: string
+                example: Cadeira01
+              department_id:
+                $ref: '#/definitions/Department/properties/id'
+        400:
+          description: Requisição inválida
+        401:
+          description: Requisição não autorizada
+        500:
+          description: Erro interno no servidor
+
+    put:
+      tags:
+        - Item
+      summary: Atualiza item
+      description: Atualiza o item informado pelo id
+      consumes:
+        - application/json
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          type: string
+          required: true
+        - in: path
+          name: itemId
+          type: integer
+          format: int32
+          required: true
+        - in: body
+          name: item_
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                example: Cadeira01
+              department_id:
+                $ref: '#/definitions/Department/properties/id'
+      responses:
+        200:
+          description: Item atualizado com sucesso
+          schema:
+            type: object
+            properties:
+              id:
+                type: integer
+                format: int32
+                example: 1
+              name:
+                type: string
+                example: Cadeira01
+              department_id:
+                $ref: '#/definitions/Department/properties/id'
+        400:
+          description: Requisição inválida
+        401:
+          description: Requisição não autorizada
+        500:
+          description: Erro interno no servidor
+
+    delete:
+      tags:
+        - Item
+      summary: Apaga item
+      description: Apaga o item informado pelo id
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          type: string
+          required: true
+        - in: path
+          name: itemId
+          type: integer
+          format: int32
+          required: true
+      responses:
+        200:
+          description: Item excluído
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Item excluído
+              name:
+                type: string
+                example: Cadeira01
+              department_id:
+                $ref: '#/definitions/Department/properties/id'
+        400:
+          description: Requisição inválida
+        401:
+          description: Requisição não autorizada
+        500:
+          description: Erro interno no servidor
+
+  '/department':
+    post:
+      tags:
+        - Department
+      summary: Cadastra departamento
+      description: Cadastra um departamento na base de dados
+      consumes:
+        - application/json
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          type: string
+          required: true
+        - in: body
+          name: department_
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                example: RH
+      responses:
+        201:
+          description: Created
+          schema:
+            $ref: '#/definitions/Department'
+        400:
+          description: Requisição inválida
+        401:
+          description: Requisição não autorizada
+        500:
+          description: Erro interno no servidor
+
+  '/department/{departmentId}':
+    get:
+      tags:
+        - Department
+      summary: Busca departamento por id
+      description: Retorna um departamento através do id informado
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          type: string
+          required: true
+        - in: path
+          name: departmentId
+          type: integer
+          format: int32
+          required: true
+
+      responses:
+        200:
+          description: OK
+          schema:
+            type: object
+            properties:
+              id:
+                type: integer
+                format: int32
+                example: 1
+              name:
+                type: string
+                example: RH
+        400:
+          description: Requisição inválida
+        401:
+          description: Requisição não autorizada
+        500:
+          description: Erro interno no servidor
+
+    put:
+      tags:
+        - Department
+      summary: Atualiza departamento
+      description: Atualiza o departamento informado pelo id
+      consumes:
+        - application/json
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          type: string
+          required: true
+        - in: path
+          name: departmentId
+          type: integer
+          format: int32
+          required: true
+        - in: body
+          name: department_
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                example: RH
+      responses:
+        200:
+          description: Departamento atualizado com sucesso
+          schema:
+            type: object
+            properties:
+              id:
+                type: integer
+                format: int32
+                example: 1
+              name:
+                type: string
+                example: RH
+        400:
+          description: Requisição inválida
+        401:
+          description: Requisição não autorizada
+        500:
+          description: Erro interno no servidor
+
+    delete:
+      tags:
+        - Department
+      summary: Apaga departamento
+      description: Apaga o departamento informado pelo id
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          type: string
+          required: true
+        - in: path
+          name: departmentId
+          type: integer
+          format: int32
+          required: true
+      responses:
+        200:
+          description: Departamento excluído
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Departamento excluído
+              name:
+                type: string
+                example: RH
+        400:
+          description: Requisição inválida
+        401:
+          description: Requisição não autorizada
+        500:
+          description: Erro interno no servidor
+
   '/users':
       get:
         tags:
@@ -132,15 +456,31 @@ paths:
         responses:
           204:
             description: Success
-  '/item':
+
+  '/inventory':
+    get:
+        tags:
+          - Inventory
+        summary: Retorna inventários
+        description: Retorna todos os inventários da base de dados
+        consumes:
+          - application/json
+        operationId: indexInventories
+        security:
+          - bearerAuth: []
+        responses:
+          200:
+            description: Success
+            schema:
+              $ref: "#/definitions/Inventory"
     post:
       tags:
-        - Item
-      summary: Cadastra item
-      description: Cadastra um item na base de dados
+        - Inventory
+      summary: Cadastra inventário
+      description: Cadastra um inventário na base de dados
       consumes:
         - application/json
-      operationId: store
+      operationId: storeInventory
       security:
         - bearerAuth: []
       parameters:
@@ -149,34 +489,42 @@ paths:
           type: string
           required: true
         - in: body
-          name: item_
+          name: Inventory
           schema:
             type: object
             properties:
               name:
                 type: string
-                example: Cadeira01
+                example: Nome Departamento
+              description:
+                type: string
+                example: Descricao0001
               department_id:
                 $ref: '#/definitions/Department/properties/id'
       responses:
         201:
           description: Created
           schema:
-            $ref: '#/definitions/Item'
+            type: object
+            properties:
+              id:
+                type: integer
+                example: 1
+              name:
+                type: string
+                example: Nome Departamento
         400:
-          description: Requisição inválida
-        401:
-          description: Requisição não autorizada
+          description: Erro de validação
         500:
           description: Erro interno no servidor
-  
-  '/item/{itemId}':
+
+  '/inventory/{inventoryId}':
     get:
       tags:
-        - Item
-      summary: Busca item por id
-      description: Retorna um item através do id informado
-      operationId: findById
+        - Inventory
+      summary: Busca inventário por id
+      description: Retorna um inventário através do id informado
+      operationId: findByIdInventory
       security:
         - bearerAuth: []
       parameters:
@@ -185,11 +533,10 @@ paths:
           type: string
           required: true
         - in: path
-          name: itemId
+          name: inventoryId
           type: integer
           format: int32
           required: true
-          
       responses:
         200:
           description: OK
@@ -198,29 +545,34 @@ paths:
             properties:
               id:
                 type: integer
-                format: int32
                 example: 1
               name:
                 type: string
-                example: Cadeira01
-              department_id:
-                $ref: '#/definitions/Department/properties/id'
-        400:
-          description: Requisição inválida
-        401:
-          description: Requisição não autorizada
-        500:
-          description: Erro interno no servidor
-          
-          
+                example: Nome Departamento
+              description:
+                type: string
+                example: Decricao0001
+              end_date:
+                type: string
+                example: null
+              Items: 
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  name:
+                    type: string
+                    example: Cadeira01
+                    
     put:
       tags:
-        - Item
-      summary: Atualiza item
-      description: Atualiza o item informado pelo id
+        - Inventory
+      summary: Atualiza inventário
+      description: Atualiza o inventário informado pelo id
       consumes:
         - application/json
-      operationId: update
+      operationId: updateInventory
       security:
         - bearerAuth: []
       parameters:
@@ -229,82 +581,91 @@ paths:
           type: string
           required: true
         - in: path
-          name: itemId
+          name: inventoryId
           type: integer
           format: int32
           required: true
         - in: body
-          name: item_
+          name: Inventory
           schema:
             type: object
             properties:
               name:
                 type: string
                 example: Cadeira01
+              description:
+                type: string
+                example: Descricao0001
+              end_date:
+                type: string
+                example: '2020-05-20T22:36:30'
               department_id:
                 $ref: '#/definitions/Department/properties/id'
       responses:
         200:
-          description: Item atualizado com sucesso
+          description: Inventário atualizado com sucesso
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                example: Nome Departamento
+              description:
+                type: string
+                example: Decricao0001
+              end_date:
+                type: string
+                example: '2020-05-20T22:36:30'
+        400:
+          description: Requisição inválida
+  
+    delete:
+      tags:
+        - Inventory
+      summary: Apaga inventário
+      description: Apaga o inventário pelo id informado
+      operationId: deleteInventory
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          type: string
+          required: true
+        - in: path
+          name: inventoryId
+          type: integer
+          format: int32
+          required: true
+      responses:
+        200:
+          description: Inventário excluído
           schema:
             type: object
             properties:
               id:
                 type: integer
-                format: int32
                 example: 1
               name:
                 type: string
-                example: Cadeira01
-              department_id:
-                $ref: '#/definitions/Department/properties/id'
+                example: Nome Inventario
         400:
-          description: Requisição inválida
-        401:
-          description: Requisição não autorizada
-        500:
-          description: Erro interno no servidor
-          
-          
-    delete:
-      tags:
-        - Item
-      summary: Apaga Item
-      description: Apaga o item informado pelo id
-      operationId: delete
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: header
-          name: Authorization
-          type: string
-          required: true
-        - in: path
-          name: itemId
-          type: integer
-          format: int32
-          required: true
-      responses:
-        200:
-          description: Item excluído
+          description: Erro ao deletar inventário
           schema:
             type: object
             properties:
-              message:
+              error:
                 type: string
-                example: Item excluído
-              name:
-                type: string
-                example: Cadeira01
-              department_id:
-                $ref: '#/definitions/Department/properties/id'
-        400:
-          description: Requisição inválida
+                example: Erro ao deletar inventário
         401:
-          description: Requisição não autorizada
-        500:
-          description: Erro interno no servidor
-
+          description: Não é possível apagar um inventário que contenha item
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: Não é possível apagar um inventário que contenha item
+                
   '/iteminventory':
     post:
       tags:
@@ -313,6 +674,8 @@ paths:
       description: Insere um item em um inventário utilizando os ids de item e inventário
       consumes:
         - application/json
+      security:
+        - bearerAuth: []
       parameters:
         - in: header
           name: Authorization
@@ -375,24 +738,36 @@ paths:
         500:
           description: Erro interno no servidor
 
-# complex objects have schema definitions
 definitions:
   User:
-    
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Usuário 01
+        email:
+          type: string
+          example: usuario@email.com
+        active:
+          type: boolean
+          example: true
+          
+  Item:
+    type: object
     properties:
       id:
         type: integer
+        format: int32
         example: 1
       name:
         type: string
-        example: Usuário 01
-      email:
-        type: string
-        example: usuario@email.com
-      active:
-        type: boolean
-        example: true
-  Item:
+        example: Cadeira01
+      department_id:
+        $ref: '#/definitions/Department/properties/id'
+        
+  Department:
     type: object
     properties:
       id:
@@ -401,29 +776,24 @@ definitions:
         example: 2
       name:
         type: string
-        example: Cadeira01
-      department_id:
-        $ref: '#/definitions/Department/properties/id'
-  
-  Department:
-    type: object
-    properties:
-      id:
-        type: integer
-        format: int32
-        example: 3
-      name:
-        type: string
-        example: Departamento01
-  
+        example: RH
+        
   Inventory:
     type: object
     properties:
       id:
         type: integer
         format: int32
-        example: 4
-  
+        example: 1
+      name:
+        type: string
+        example: Departamento
+      end_date:
+        type: string
+        example: null
+      department_id:
+        $ref: '#/definitions/Department/properties/id'
+        
   ItemInventory:
     type: object
     properties:
