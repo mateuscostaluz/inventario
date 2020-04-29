@@ -68,7 +68,7 @@ paths:
           description: Requisição não autorizada
         500:
           description: Erro interno no servidor
-  
+
   '/item/{itemId}':
     get:
       tags:
@@ -88,7 +88,7 @@ paths:
           type: integer
           format: int32
           required: true
-          
+
       responses:
         200:
           description: OK
@@ -110,8 +110,7 @@ paths:
           description: Requisição não autorizada
         500:
           description: Erro interno no servidor
-          
-          
+
     put:
       tags:
         - Item
@@ -163,12 +162,11 @@ paths:
           description: Requisição não autorizada
         500:
           description: Erro interno no servidor
-          
-          
+
     delete:
       tags:
         - Item
-      summary: Apaga Item
+      summary: Apaga item
       description: Apaga o item informado pelo id
       operationId: delete
       security:
@@ -197,6 +195,167 @@ paths:
                 example: Cadeira01
               department_id:
                 $ref: '#/definitions/Department/properties/id'
+        400:
+          description: Requisição inválida
+        401:
+          description: Requisição não autorizada
+        500:
+          description: Erro interno no servidor
+
+  '/department':
+    post:
+      tags:
+        - Department
+      summary: Cadastra departamento
+      description: Cadastra um departamento na base de dados
+      consumes:
+        - application/json
+      operationId: store
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          type: string
+          required: true
+        - in: body
+          name: department_
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                example: RH
+      responses:
+        201:
+          description: Created
+          schema:
+            $ref: '#/definitions/Department'
+        400:
+          description: Requisição inválida
+        401:
+          description: Requisição não autorizada
+        500:
+          description: Erro interno no servidor
+
+  '/department/{departmentId}':
+    get:
+      tags:
+        - Department
+      summary: Busca departamento por id
+      description: Retorna um departamento através do id informado
+      operationId: findById
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          type: string
+          required: true
+        - in: path
+          name: departmentId
+          type: integer
+          format: int32
+          required: true
+
+      responses:
+        200:
+          description: OK
+          schema:
+            type: object
+            properties:
+              id:
+                type: integer
+                format: int32
+                example: 1
+              name:
+                type: string
+                example: RH
+        400:
+          description: Requisição inválida
+        401:
+          description: Requisição não autorizada
+        500:
+          description: Erro interno no servidor
+
+    put:
+      tags:
+        - Department
+      summary: Atualiza departamento
+      description: Atualiza o departamento informado pelo id
+      consumes:
+        - application/json
+      operationId: update
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          type: string
+          required: true
+        - in: path
+          name: departmentId
+          type: integer
+          format: int32
+          required: true
+        - in: body
+          name: department_
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                example: RH
+      responses:
+        200:
+          description: Departamento atualizado com sucesso
+          schema:
+            type: object
+            properties:
+              id:
+                type: integer
+                format: int32
+                example: 1
+              name:
+                type: string
+                example: RH
+        400:
+          description: Requisição inválida
+        401:
+          description: Requisição não autorizada
+        500:
+          description: Erro interno no servidor
+
+    delete:
+      tags:
+        - Department
+      summary: Apaga departamento
+      description: Apaga o departamento informado pelo id
+      operationId: delete
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          type: string
+          required: true
+        - in: path
+          name: departmentId
+          type: integer
+          format: int32
+          required: true
+      responses:
+        200:
+          description: Departamento excluído
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Departamento excluído
+              name:
+                type: string
+                example: RH
         400:
           description: Requisição inválida
         401:
@@ -327,7 +486,7 @@ definitions:
         example: Cadeira01
       department_id:
         $ref: '#/definitions/Department/properties/id'
-  
+
   Department:
     type: object
     properties:
@@ -337,4 +496,4 @@ definitions:
         example: 2
       name:
         type: string
-        example: Departamento01
+        example: RH
