@@ -38,8 +38,8 @@ class UserController {
 
   async update (ctx) {
     const schema = Yup.object().shape({
-      name: Yup.string().strict().min(2),
-      email: Yup.string().email(),
+      name: Yup.string().required().min(2).strict(),
+      email: Yup.string().email().required(),
       oldPassword: Yup.string().min(6),
       password: Yup.string()
         .min(6)
