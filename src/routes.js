@@ -14,8 +14,8 @@ const router = new Router()
 
 const spec = yamljs.load('./src/docs/swagger.yaml')
 
-router.use(koaSwagger({ routePrefix: false, swaggerOptions: { spec } }))
-router.get('/docs', koaSwagger())
+router.use(koaSwagger())
+router.get('/inventario/docs', koaSwagger({ routePrefix: false, swaggerOptions: { spec } }))
 
 router.post('/auth', AuthController.store)
 router.post('/users', UserController.store)
@@ -45,6 +45,6 @@ router.put('/inventory/:id', InventoryController.update)
 router.delete('/inventory/:id', InventoryController.delete)
 
 router.post('/iteminventory', ItemInventoryController.store)
-router.delete('/iteminventory/:id', ItemInventoryController.delete)
+router.delete('/iteminventory/:itemId/:inventoryId', ItemInventoryController.delete)
 
 export default router
