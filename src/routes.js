@@ -14,8 +14,8 @@ const router = new Router()
 
 const spec = yamljs.load('./src/docs/swagger.yaml')
 
-router.use(koaSwagger())
-router.get('/docs', koaSwagger({ routePrefix: false, swaggerOptions: { spec } }))
+router.use(koaSwagger({ routePrefix: false, swaggerOptions: { spec } }))
+router.get('/docs', koaSwagger())
 
 router.post('/auth', AuthController.store)
 router.post('/users', UserController.store)
