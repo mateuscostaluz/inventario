@@ -83,8 +83,20 @@ class InventoryController {
       return ctx.response.body
     }
 
+    if (!await schema.isValid(ctx.request.body)) {
+      ctx.status = 400
+      ctx.response.body = { error: 'Parametros Inválidos' }
+      return ctx.response.body
+    }
+
     try {
       const inventory = await Inventory.findByPk(ctx.params.id)
+
+      if (inventory.end_date) {
+        ctx.status = 400
+        ctx.response.body = { error: 'Impossível editar inventario, inventário já encerrado' }
+        return ctx.response.body
+      }
 
       const { name, description, end_date: endDate } = await inventory.update(ctx.request.body)
       ctx.status = 200
