@@ -6,7 +6,7 @@ import Item from '../app/models/Item'
 import ItemInventory from '../app/models/ItemInventory'
 import User from '../app/models/User'
 
-import databaseConfig from '../config/database'
+import { development, test } from '../config/database'
 
 const models = [Department, Inventory, Item, ItemInventory, User]
 
@@ -16,7 +16,7 @@ class Database {
   }
 
   init () {
-    this.connection = new Sequelize(databaseConfig)
+    this.connection = new Sequelize(process.env.NODE_ENV === 'test' ? test : development)
 
     models
       .map(model => model.init(this.connection))
