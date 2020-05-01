@@ -49,7 +49,10 @@ class ItemInventoryController {
   async delete (ctx) {
     try {
       const itemOnInventory = await ItemInventory.findOne({
-        where: { item_id: ctx.params.id }
+        where: {
+          item_id: ctx.params.itemId,
+          inventory_id: ctx.params.inventoryId
+        }
       })
 
       const { end_date: endDate } = await Inventory.findOne({
@@ -64,8 +67,7 @@ class ItemInventoryController {
 
       itemOnInventory.destroy()
 
-      ctx.status = 200
-      ctx.response.body = itemOnInventory
+      ctx.status = 204
     } catch (err) {
       ctx.status = 400
       ctx.response.body = { error: 'Não foi possível excluir o item do inventário' }

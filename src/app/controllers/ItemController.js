@@ -15,8 +15,14 @@ class ItemController {
         ctx.status = 404
         return
       }
+
+      const { id, name, department_id: depId } = item
       ctx.status = 200
-      ctx.response.body = item
+      ctx.response.body = {
+        id,
+        name,
+        depId
+      }
     } catch (err) {
       ctx.status = 400
       ctx.response.body = err

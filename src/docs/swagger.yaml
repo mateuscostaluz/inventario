@@ -706,7 +706,7 @@ paths:
         500:
           description: Erro interno no servidor
   
-  '/iteminventory/{itemId}':
+  '/iteminventory/{itemId}/{inventoryId}':
     delete:
       tags:
         - ItemInventory
@@ -724,14 +724,14 @@ paths:
           type: integer
           format: int32
           required: true
+        - in: path
+          name: inventoryId
+          type: integer
+          format: int32
+          required: true
       responses:
-        200:
+        204:
           description: Item excluído
-          schema:
-            type: object
-            properties:
-              itemOnInventory:
-                $ref: '#/definitions/Item'
         400:
           description: Requisição inválida
         401:
@@ -758,7 +758,7 @@ paths:
                   example: usuario@email.com
                 password:
                   type: string
-                  example: 123456
+                  example: senha123
       responses:
         201:
           description: Item inserido no inventário com sucesso
