@@ -60,7 +60,7 @@ describe('Test ItemInventory endpoints', () => {
       .set('Authorization', 'bearer ' + token)
       .send({ inventory_id: inventory.id, item_id: item.id })
     expect(response.statusCode).toBe(400)
-    expect(response.body).toStrictEqual({ error: 'Inventário já está fechado' })
+    expect(response.body).toStrictEqual({ error: 'Impossível criar item, inventário já encerrado' })
   })
 
   test('Should Response 400 - Item não encontrado', async () => {
@@ -109,7 +109,7 @@ describe('Test ItemInventory endpoints', () => {
     expect(response.statusCode).toBe(400)
   })
 
-  test('Should Response 401 - Impossível excluir item, inventário já encerrado', async () => {
+  test('Should Response 400 - Impossível excluir item, inventário já encerrado', async () => {
     const item3 = await Item.create({
       name: 'Item',
       department_id: department.id
@@ -125,7 +125,7 @@ describe('Test ItemInventory endpoints', () => {
     const response = await request(app)
       .delete('/iteminventory/' + item3.id + '/' + inventory.id)
       .set('Authorization', 'bearer ' + token)
-    expect(response.statusCode).toBe(401)
+    expect(response.statusCode).toBe(400)
     expect(response.body).toStrictEqual({ error: 'Impossível excluir item, inventário já encerrado' })
   })
 })

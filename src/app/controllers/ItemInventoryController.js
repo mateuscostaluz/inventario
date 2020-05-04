@@ -16,9 +16,9 @@ class ItemInventoryController {
     const item = await Item.findByPk(itemId)
     const inventory = await Inventory.findByPk(invId)
 
-    if (inventory.end_date !== null) {
+    if (inventory.end_date) {
       ctx.status = 400
-      ctx.response.body = { error: 'Inventário já está fechado' }
+      ctx.response.body = { error: 'Impossível criar item, inventário já encerrado' }
       return
     }
 
@@ -60,7 +60,7 @@ class ItemInventoryController {
       })
 
       if (endDate) {
-        ctx.status = 401
+        ctx.status = 400
         ctx.response.body = { error: 'Impossível excluir item, inventário já encerrado' }
         return
       }

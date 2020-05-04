@@ -174,6 +174,16 @@ describe('Test Inventories endpoints', () => {
     expect(response.body.end_date).toBe('2020-04-20T22:36:30.001Z')
   })
 
+  test('Should return error: inventory has already been closed', async () => {
+    const inventory = await Inventory.create({ name: 'Inventario 01', description: 'Descrição 0001', end_date: '2020-04-20T22:36:30.001Z' })
+
+    const response = await request(app)
+      .put('/inventory/' + inventory.id)
+      .set('Authorization', 'bearer ' + token)
+      .send({ end_date: '2020-04-20T22:36:30.001Z' })
+    expect(response.statusCode).toBe(400)
+  })
+
   test('Should return bad request - missing id', async () => {
     const id = null
 
